@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentinela V3.0 - Painel Executivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+</head>
+<body class="bg-slate-100 font-sans antialiased text-slate-800">
+
+    <div id="loadingOverlay" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center transition-opacity duration-500">
+        <i class="fa-solid fa-shield-halved fa-beat-fade text-5xl text-emerald-400 mb-4"></i>
+        <h2 class="text-2xl font-bold text-white tracking-widest uppercase">Motor de Detecção de Fraude e Risco em Direitos Creditórios</h2>
+        <p class="text-sm text-slate-400 mt-2">Núclea + FIAP Enterprise Challenge 2025/2026...</p>
+    </div>
+
+    <div class="bg-slate-900 text-white p-5 shadow-lg border-b-4 border-emerald-500 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight"><i class="fa-solid fa-shield-halved mr-3 text-emerald-500"></i>Sentinela V3.0</h1>
+            <p class="text-slate-400 mt-1 text-sm uppercase tracking-wider">Módulo de Auditoria Preditiva (MLOps)</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right hidden lg:block mr-2">
+                <p class="text-xs text-slate-400">Status do Motor</p>
+                <p class="text-sm font-bold text-emerald-400"><i class="fa-solid fa-check-double mr-1"></i>Sincronizado (Batch)</p>
+            </div>
+            
+            <button id="btnVerEDA" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg transition flex items-center group">
+                <i class="fa-solid fa-magnifying-glass-chart mr-2 group-hover:scale-110 transition"></i> EDA Profunda
+            </button>
+            <button id="btnVerCodigo" class="bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white text-xs font-bold py-2 px-4 rounded-lg shadow-lg transition flex items-center group">
+                <i class="fa-brands fa-python text-yellow-400 mr-2 group-hover:rotate-180 transition duration-500"></i> Motor IA (Ensemble)
+            </button>
+        </div>
+    </div>
+    
+    <div class="p-8 max-w-7xl mx-auto space-y-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-blue-500">
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wide">Volume Analisado</h3>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <p id="kpi-volume" class="text-4xl font-extrabold text-slate-800">0</p>
+                    <p class="text-sm font-medium text-slate-500">operações</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-600">
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wide">Malha Fina (Casos Críticos)</h3>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <p id="kpi-malha" class="text-4xl font-extrabold text-red-600">0</p>
+                    <p class="text-sm font-medium text-red-400">bloqueados</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-emerald-500">
+                <h3 class="text-slate-500 text-xs font-bold uppercase tracking-wide">Capital Preservado</h3>
+                <div class="mt-2 flex items-baseline gap-2">
+                    <p id="kpi-capital" class="text-4xl font-extrabold text-emerald-600">R$ 0</p>
+                    <p class="text-sm font-medium text-emerald-500">protegidos</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h2 class="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b pb-2"><i class="fa-solid fa-list-ul mr-2 text-slate-400"></i>Anatomia das Fraudes (Ordenado)</h2>
+                <div class="relative h-64 w-full"><canvas id="chartAnatomia"></canvas></div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h2 class="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b pb-2"><i class="fa-solid fa-map-location-dot mr-2 text-slate-400"></i>Geografia de Risco (Top 5 UF)</h2>
+                <div class="relative h-64 w-full"><canvas id="chartGeo"></canvas></div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h2 class="text-sm font-bold text-slate-800 mb-4 uppercase tracking-wide border-b pb-2"><i class="fa-solid fa-sack-dollar mr-2 text-slate-400"></i>Exposição por Cluster de Valor</h2>
+                <div class="relative h-64 w-full"><canvas id="chartCluster"></canvas></div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <h2 class="text-sm font-bold text-slate-800 mb-2 uppercase tracking-wide"><i class="fa-solid fa-crosshairs mr-2 text-slate-400"></i>Radar: IA vs Outros (Risco Absoluto vs. Valor)</h2>
+                <p class="text-xs text-slate-500 mb-2 border-b pb-2">Destaca visualmente os outliers que apenas a Inteligência Artificial conseguiu detectar.</p>
+                <div class="relative h-60 w-full"><canvas id="chartScatter"></canvas></div>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-2">
+            <button onclick="mudarTabela('ia')" class="btn-tab bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide shadow-inner"><i class="fa-solid fa-microchip mr-1"></i> IA Explicável (Top 5)</button>
+            <button onclick="mudarTabela('zumbi')" class="btn-tab bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide"><i class="fa-solid fa-skull mr-1"></i> Boletos Zumbis</button>
+            <button onclick="mudarTabela('colusao')" class="btn-tab bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide"><i class="fa-solid fa-network-wired mr-1"></i> Colusão (Redes)</button>
+            <button onclick="mudarTabela('setorial')" class="btn-tab bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide"><i class="fa-solid fa-chart-line mr-1"></i> Z-Score (Setorial)</button>
+        </div>
+
+        <div class="bg-white rounded-b-xl rounded-tr-xl shadow-sm overflow-hidden border border-slate-200">
+            <div class="p-5 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h2 id="titulo-tabela" class="text-base font-bold text-slate-800 uppercase tracking-wide"><i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)</h2>
+                <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Auditoria Ativa</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white text-slate-500 text-xs uppercase tracking-wider border-b">
+                            <th class="p-4 font-semibold">ID Transação</th>
+                            <th class="p-4 font-semibold">Valor Nominal</th>
+                            <th class="p-4 font-semibold text-center">Score (Pts)</th>
+                            <th class="p-4 font-semibold w-1/3">Justificativa da Regra / Explicabilidade</th>
+                            <th class="p-4 font-semibold text-center">UF</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-ameacas" class="text-sm text-slate-700 divide-y divide-slate-100">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalEDA" class="fixed inset-0 bg-slate-900 bg-opacity-80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-xl shadow-2xl w-11/12 max-w-6xl overflow-hidden border-t-8 border-indigo-600 flex flex-col max-h-[95vh]">
+            <div class="flex justify-between items-center p-5 border-b border-slate-200 bg-slate-50">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-chart-line text-indigo-600 text-2xl mr-3"></i>
+                    <div>
+                        <h3 class="text-slate-800 font-bold text-lg uppercase tracking-wide">Descobertas de Negócio (Deep EDA)</h3>
+                        <p class="text-slate-500 text-xs">Padrões visuais extraídos do motor Python antes da aplicação de Machine Learning.</p>
+                    </div>
+                </div>
+                <button id="btnFecharEDA" class="text-slate-400 hover:text-red-500 transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            <div class="p-6 overflow-y-auto bg-white text-sm grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 shadow-sm">
+                    <h4 class="text-indigo-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-database mr-1"></i> Qualidade e Gap de Dados</h4>
+                    <p class="text-slate-600">Identificamos que <strong>46.6% dos dados de liquidez (cedente)</strong> estavam nulos. Em vez de descartar os dados e enviesar o modelo, aplicamos engenharia de features com imputação estatística pela mediana.</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg border border-red-100 shadow-sm">
+                    <h4 class="text-red-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-copy mr-1"></i> Duplicatas Transacionais</h4>
+                    <p class="text-slate-600">Alerta Crítico: <strong>14.6% da base</strong> corresponde a grupos de boletos com o mesmo pagador, beneficiário, valor e data de emissão, disfarçados com IDs diferentes. Risco imediato de dupla cobrança.</p>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-lg border border-amber-100 shadow-sm">
+                    <h4 class="text-amber-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-money-bill-transfer mr-1"></i> Smurfing e Overpayments</h4>
+                    <p class="text-slate-600">Detectamos <strong>509 boletos</strong> pagos com valor muito superior ao nominal. Esse padrão sistêmico é um vetor clássico de lavagem de dinheiro (pagar a mais para pedir devolução limpa em outra conta).</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 shadow-sm">
+                    <h4 class="text-indigo-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-calendar-days mr-1"></i> Anomalia Temporal</h4>
+                    <p class="text-slate-600">Houve uma "explosão repentina" de emissões onde <strong>73% dos boletos</strong> foram gerados em apenas 2 meses. Isso caracteriza o lançamento retroativo de títulos frios na base.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100 shadow-sm">
+                    <h4 class="text-indigo-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-user-clock mr-1"></i> Perfil Financeiro do FIDC</h4>
+                    <p class="text-slate-600">A mediana de atraso histórico das empresas da base é de impressionantes <strong>178 dias</strong>. Isso prova que a carteira operada já possui um nível de "crédito podre" (toxicidade) acima do limite de segurança aceitável.</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg border border-red-100 shadow-sm">
+                    <h4 class="text-red-700 font-bold mb-2 uppercase text-xs tracking-widest"><i class="fa-solid fa-network-wired mr-1"></i> Concentração e Colusão</h4>
+                    <p class="text-slate-600">Aproximadamente <strong>80% de todo o volume</strong> está concentrado em um grupo minúsculo de atores. Existem dezenas de CNPJs que só realizam transações financeiras milionárias entre si mesmos (auto-faturamento).</p>
+                </div>
+            </div>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <button id="btnFecharEDABottom" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-6 rounded transition">Voltar ao Painel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPython" class="fixed inset-0 bg-slate-900 bg-opacity-80 z-50 hidden flex items-center justify-center backdrop-blur-sm transition-opacity">
+        <div class="bg-slate-800 rounded-xl shadow-2xl w-11/12 max-w-5xl overflow-hidden border border-slate-600 flex flex-col max-h-[90vh]">
+            <div class="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-900">
+                <div class="flex items-center">
+                    <i class="fa-brands fa-python text-yellow-400 text-2xl mr-3"></i>
+                    <div>
+                        <h3 class="text-white font-bold text-lg uppercase tracking-wide">Under the Hood: Engine V3.0</h3>
+                        <p class="text-slate-400 text-xs">Exposição da lógica preditiva e Ensemble de Machine Learning</p>
+                    </div>
+                </div>
+                <button id="btnFecharModal" class="text-slate-400 hover:text-white transition"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            </div>
+            
+            <div class="p-6 overflow-y-auto bg-[#282c34] text-sm space-y-6">
+                
+                <div>
+                    <h4 class="text-yellow-400 font-bold mb-2 uppercase text-xs tracking-widest">// 1. ENSEMBLE DE MACHINE LEARNING (IF + LOF)</h4>
+                    <pre><code class="language-python rounded-lg shadow-inner"># Feature Engineering: Winsorização e Escalonamento
+scaler = RobustScaler()
+X_scaled = scaler.fit_transform(X_features)
+
+# Redução de Dimensionalidade (PCA) preservando a variância
+pca = PCA(n_components=15, random_state=42)
+X_pca = pca.fit_transform(X_scaled)
+
+# Modelo 1: Isolation Forest (Busca anomalias globais em florestas)
+modelo_if = IsolationForest(n_estimators=300, contamination=0.02, random_state=42)
+modelo_if.fit(X_pca)
+
+# Modelo 2: Local Outlier Factor (Busca anomalias por densidade local)
+modelo_lof = LocalOutlierFactor(n_neighbors=20, contamination=0.02)
+lof_scores = modelo_lof.fit_predict(X_pca)
+
+# ENSEMBLE: A fraude é confirmada se capturada por qualquer um dos vetores matemáticos
+df['flag_fraude_ia'] = np.where((modelo_if.predict(X_pca) == -1) | (lof_scores == -1), 1, 0)</code></pre>
+                </div>
+
+                <div>
+                    <h4 class="text-emerald-400 font-bold mb-2 uppercase text-xs tracking-widest">// 2. EXPLAINABLE AI (TRADUZINDO A MATEMÁTICA PARA O NEGÓCIO)</h4>
+                    <pre><code class="language-python rounded-lg shadow-inner"># Função de negócio para explicar ao analista O PORQUÊ do bloqueio da IA
+def _explicar(linha):
+    motivos = []
+    # Compara o boleto suspeito com o 99º e 95º percentil de toda a base
+    if linha['vlr_nominal'] >= refs['vlr_nominal']['p99']:
+        motivos.append("Valor do boleto extremamente alto")
+    if linha['desvio_ticket_pagador'] >= refs['desvio_ticket_pagador']['p95']:
+        motivos.append("Foge absurdamente do padrão de gastos do pagador")
+    if linha['freq_dupla_pag_benef'] >= refs['freq_dupla_pag_benef']['p99']:
+        motivos.append("Repetição anormal entre estas duas empresas")
+        
+    return " | ".join(motivos) if motivos else "Combinação multivariada anômala"
+
+# Aplica a justificativa apenas nos casos pegos pelo Ensemble
+df['motivo_anomalia_ia'] = np.where(df['flag_fraude_ia'] == 1, df.apply(_explicar, axis=1), 'N/A')</code></pre>
+                </div>
+
+                <div>
+                    <h4 class="text-blue-400 font-bold mb-2 uppercase text-xs tracking-widest">// 3. CONTEXTO MACROECONÔMICO (API) E Z-SCORE SETORIAL</h4>
+                    <pre><code class="language-python rounded-lg shadow-inner"># Conexão Open Data com BACEN para calibrar a tolerância de risco do FIDC
+selic_atual = float(requests.get("https://api.bcb.gov.br/dados/...").json()[0]['valor'])
+if selic_atual > 10.0:
+    df['pontuacao_risco'] += 5 # O crédito está caro, a malha fina aperta.
+
+# Z-Score: Estatística de desvio padrão baseada na média daquele setor específico (IBGE)
+df['z_score_setorial'] = df.groupby('cd_cnae_prin_beneficiario')['vlr_nominal'].transform(
+    lambda x: (x - x.mean()) / x.std()
+)</code></pre>
+                </div>
+
+            </div>  
+            
+            <div class="p-4 bg-slate-900 border-t border-slate-700 flex justify-end">
+                <button id="btnFecharModalBottom" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded transition">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        // Controle dos Modais
+        const modalPython = document.getElementById('modalPython');
+        const modalEDA = document.getElementById('modalEDA');
+        
+        document.getElementById('btnVerCodigo').onclick = () => modalPython.classList.remove('hidden');
+        document.getElementById('btnFecharModal').onclick = () => modalPython.classList.add('hidden');
+        document.getElementById('btnFecharModalBottom').onclick = () => modalPython.classList.add('hidden');
+
+        document.getElementById('btnVerEDA').onclick = () => modalEDA.classList.remove('hidden');
+        document.getElementById('btnFecharEDA').onclick = () => modalEDA.classList.add('hidden');
+        document.getElementById('btnFecharEDABottom').onclick = () => modalEDA.classList.add('hidden');
+        
+        window.addEventListener('click', (e) => { 
+            if (e.target === modalPython) modalPython.classList.add('hidden');
+            if (e.target === modalEDA) modalEDA.classList.add('hidden');
+        });
+
+        // Configuração Global dos Gráficos
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.plugins.tooltip.backgroundColor = '#1e293b';
+
+        // 1. Gráfico de Barras Horizontais (Anatomia)
+        const chartAnatomia = new Chart(document.getElementById('chartAnatomia').getContext('2d'), {
+            type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#ef4444', borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { display: false } } } }
+        });
+
+        // 2. Gráfico de Barras Verticais (Geografia)
+        const chartGeo = new Chart(document.getElementById('chartGeo').getContext('2d'), {
+            type: 'bar', data: { labels: [], datasets: [{ data: [], backgroundColor: '#3b82f6', borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
+        });
+
+        // 3. Gráfico de Barras Verticais (Clusters fixados)
+        const chartCluster = new Chart(document.getElementById('chartCluster').getContext('2d'), {
+            type: 'bar', data: { labels: ['1 - Baixo', '2 - Médio', '3 - Alto', '4 - Muito Alto'], datasets: [{ data: [0,0,0,0], backgroundColor: '#8b5cf6', borderRadius: 4 }] },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
+        });
+
+        // 4. Gráfico Scatter Plot com DUAS CORES (Radar IA vs Outros)
+        const chartScatter = new Chart(document.getElementById('chartScatter').getContext('2d'), {
+            type: 'scatter', 
+            data: { 
+                datasets: [
+                    { label: 'Anomalia de IA (Ensemble)', data: [], backgroundColor: '#ef4444', pointRadius: 7, pointHoverRadius: 9 },
+                    { label: 'Outros Bloqueios Críticos', data: [], backgroundColor: '#cbd5e1', pointRadius: 5, pointHoverRadius: 6 }
+                ] 
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { x: { title: { display: true, text: 'Pontuação de Risco' }, grid: { color: '#f1f5f9' } }, y: { title: { display: true, text: 'Valor Financeiro Exposto (R$)' }, grid: { color: '#f1f5f9' } } },
+                plugins: { tooltip: { callbacks: { label: function(ctx) { return `Score: ${ctx.raw.x} pts | Valor: R$ ${ctx.raw.y.toLocaleString('pt-BR')}`; } } } }
+            }
+        });
+
+        // Variável global para armazenar os dados críticos
+        let baseCriticos = [];
+
+        // Função Principal de Processamento
+        function processarDados(data) {
+            const validos = data.filter(d => d.id_boleto && d.classificacao_sentinela);
+            baseCriticos = validos.filter(d => d.classificacao_sentinela.includes('CR') || d.pontuacao_risco >= 60);
+
+            // KPIs
+            const totalCapital = baseCriticos.reduce((acc, val) => acc + (parseFloat(val.vlr_nominal) || 0), 0);
+            document.getElementById('kpi-volume').innerText = validos.length.toLocaleString('pt-BR');
+            document.getElementById('kpi-malha').innerText = baseCriticos.length.toLocaleString('pt-BR');
+            document.getElementById('kpi-capital').innerText = 'R$ ' + (totalCapital / 1000000).toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + ' Mi';
+
+            // Anatomia (Com Pagamento Fantasma e Ordenada Decrescente)
+            const anatomia = {
+                'IA (Ensemble)': 0, 'Boleto Zumbi': 0, 'Duplicata Transacional': 0, 
+                'Overpayment Alto': 0, 'Colusão (Redes)': 0, 'Z-Score (Setorial)': 0,
+                'Pagamento Fantasma': 0 // Incluído com valor zero ou contável
+            };
+            baseCriticos.forEach(d => {
+                if(d.flag_fraude_ia == 1) anatomia['IA (Ensemble)']++;
+                if(d.flag_boleto_zumbi == 1) anatomia['Boleto Zumbi']++;
+                if(d.flag_duplicata_transacional == 1) anatomia['Duplicata Transacional']++;
+                if(d.flag_overpayment_alto == 1) anatomia['Overpayment Alto']++;
+                if(d.flag_colusao == 1) anatomia['Colusão (Redes)']++;
+                if(d.flag_anomalia_setorial == 1) anatomia['Z-Score (Setorial)']++;
+                if(d.flag_pagamento_fantasma == 1) anatomia['Pagamento Fantasma']++;
+            });
+            // Ordena o objeto anatomia por valor (desc)
+            const anatomiaSorted = Object.entries(anatomia).sort((a, b) => b[1] - a[1]);
+            chartAnatomia.data.labels = anatomiaSorted.map(x => x[0]);
+            chartAnatomia.data.datasets[0].data = anatomiaSorted.map(x => x[1]);
+            chartAnatomia.update();
+
+            // Geografia (Top 5)
+            const geo = {};
+            baseCriticos.forEach(d => { let uf = d.uf_pagador || 'NI'; geo[uf] = (geo[uf] || 0) + 1; });
+            const geoSorted = Object.entries(geo).sort((a,b) => b[1] - a[1]).slice(0,5);
+            chartGeo.data.labels = geoSorted.map(x => x[0]);
+            chartGeo.data.datasets[0].data = geoSorted.map(x => x[1]);
+            chartGeo.update();
+
+            // Clusters (Forçando a ordem fixa de 1 a 4)
+            const countClusters = {'1 - Baixo': 0, '2 - Médio': 0, '3 - Alto': 0, '4 - Muito Alto': 0};
+            baseCriticos.forEach(d => { 
+                if(countClusters[d.cluster_valor_nominal] !== undefined) {
+                    countClusters[d.cluster_valor_nominal]++; 
+                }
+            });
+            chartCluster.data.datasets[0].data = [countClusters['1 - Baixo'], countClusters['2 - Médio'], countClusters['3 - Alto'], countClusters['4 - Muito Alto']];
+            chartCluster.update();
+
+            // Scatter Plot dividido (IA vermelho, Resto cinza)
+            const dataIA = [];
+            const dataOutros = [];
+            baseCriticos.forEach(d => {
+                const pt = { x: parseFloat(d.pontuacao_risco)||0, y: parseFloat(d.vlr_nominal)||0 };
+                if(d.flag_fraude_ia == 1) dataIA.push(pt);
+                else dataOutros.push(pt);
+            });
+            chartScatter.data.datasets[0].data = dataIA; // Dataset 0 é o Vermelho
+            chartScatter.data.datasets[1].data = dataOutros; // Dataset 1 é o Cinza
+            chartScatter.update();
+
+            // Inicializa a tabela padrão (IA Explicável)
+            mudarTabela('ia');
+        }
+
+        // FUNÇÃO DINÂMICA DA TABELA
+        function mudarTabela(tipo) {
+            // Lógica para mudar a cor dos botões (Estética)
+            const botoes = document.querySelectorAll('.btn-tab');
+            botoes.forEach(b => {
+                b.classList.remove('bg-emerald-600', 'text-white', 'shadow-inner');
+                b.classList.add('bg-slate-200', 'text-slate-600');
+            });
+            event.currentTarget.classList.remove('bg-slate-200', 'text-slate-600');
+            event.currentTarget.classList.add('bg-emerald-600', 'text-white', 'shadow-inner');
+
+            let filtrados = [];
+            let titulo = "";
+            let textoMotivoPadrao = "";
+
+            if(tipo === 'ia') {
+                filtrados = baseCriticos.filter(d => d.flag_fraude_ia == 1);
+                titulo = "<i class='fa-solid fa-microchip text-emerald-500 mr-2'></i>Ameaças por Inteligência Artificial (IA)";
+            } else if(tipo === 'zumbi') {
+                filtrados = baseCriticos.filter(d => d.flag_boleto_zumbi == 1);
+                titulo = "<i class='fa-solid fa-skull text-emerald-500 mr-2'></i>Boletos Zumbis Isolados";
+                textoMotivoPadrao = "Atraso severo (>365 dias) com Pagador sem liquidez";
+            } else if(tipo === 'colusao') {
+                filtrados = baseCriticos.filter(d => d.flag_colusao == 1);
+                titulo = "<i class='fa-solid fa-network-wired text-emerald-500 mr-2'></i>Tentativas de Colusão / Auto-Faturamento";
+                textoMotivoPadrao = "Pagador e Recebedor do mesmo grupo operando em rede";
+            } else if(tipo === 'setorial') {
+                filtrados = baseCriticos.filter(d => d.flag_anomalia_setorial == 1);
+                titulo = "<i class='fa-solid fa-chart-line text-emerald-500 mr-2'></i>Distorção Estatística de Z-Score";
+                textoMotivoPadrao = "Valor nominal diverge totalmente da média do Setor (IBGE)";
+            }
+
+            document.getElementById('titulo-tabela').innerHTML = titulo;
+
+            // Pega os 5 maiores em valor daquele filtro
+            const top5 = filtrados.sort((a,b) => (parseFloat(b.vlr_nominal)||0) - (parseFloat(a.vlr_nominal)||0)).slice(0,5);
+            const tbody = document.getElementById('tbody-ameacas');
+            tbody.innerHTML = '';
+            
+            top5.forEach(d => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-50 transition border-b border-slate-100';
+                
+                // Se for a IA, pega a explicabilidade. Se não, usa o texto padrão da regra.
+                let motivoStr = textoMotivoPadrao;
+                if(tipo === 'ia') {
+                    motivoStr = (d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A') 
+                                ? d.motivo_anomalia_ia : 'Anomalia estrutural multivariada';
+                }
+
+                tr.innerHTML = `
+                    <td class="p-4 font-mono text-xs text-slate-500">${String(d.id_boleto).substring(0,8)}...</td>
+                    <td class="p-4 font-bold text-red-600">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2})}</td>
+                    <td class="p-4 text-center"><span class="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)}</span></td>
+                    <td class="p-4 text-xs font-medium text-slate-600">${motivoStr}</td>
+                    <td class="p-4 text-center font-bold">${d.uf_pagador || 'NI'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // INIT: Fetch GitHub CSV
+        function initDashboard() {
+            setTimeout(() => {
+                Papa.parse('Sentinela_MVP_Final.csv', {
+                    download: true,
+                    header: true,
+                    dynamicTyping: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        document.getElementById('loadingOverlay').classList.add('opacity-0');
+                        setTimeout(() => document.getElementById('loadingOverlay').classList.add('hidden'), 500);
+                        processarDados(results.data);
+                    },
+                    error: function(err) {
+                        console.warn("Leitura automática bloqueada (Modo Local). Ativando botão manual.");
+                        const loader = document.getElementById('loadingOverlay');
+                        loader.innerHTML = `
+                            <i class="fa-solid fa-file-csv text-5xl text-blue-500 mb-4"></i>
+                            <h2 class="text-2xl font-bold text-white tracking-widest uppercase">Modo Local Detectado</h2>
+                            <p class="text-sm text-slate-400 mt-2 text-center px-4">O navegador bloqueou a leitura automática por segurança.<br>Selecione o arquivo CSV manualmente para testar:</p>
+                            <label class="mt-6 bg-blue-600 hover:bg-blue-700 cursor-pointer text-white font-bold py-2 px-6 rounded-lg transition inline-block">
+                                Selecionar Arquivo
+                                <input type="file" id="fileUploadFallback" accept=".csv" class="hidden">
+                            </label>
+                        `;
+                        
+                        document.getElementById('fileUploadFallback').addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            if(file) {
+                                Papa.parse(file, {
+                                    header: true, dynamicTyping: true, skipEmptyLines: true,
+                                    complete: function(results) {
+                                        loader.classList.add('opacity-0');
+                                        setTimeout(() => loader.classList.add('hidden'), 500);
+                                        processarDados(results.data);
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }, 800);
+        }
+
+        initDashboard();
+    </script>
+</body>
+</html>
