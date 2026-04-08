@@ -55,7 +55,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800">
 
-    <!-- ═══════════════════════════════════════════════ LOADING ═══ -->
+    <!-- LOADING -->
     <div id="loadingOverlay" class="fixed inset-0 bg-slate-900 grid-bg z-[100] flex flex-col items-center justify-center transition-opacity duration-700">
         <div class="relative mb-6">
             <i class="fa-solid fa-shield-halved fa-beat-fade text-6xl text-emerald-400"></i>
@@ -69,7 +69,8 @@
         </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════ HEADER ═══ -->
+
+    <!-- HEADER -->
     <header class="bg-slate-900 text-white px-6 py-4 shadow-xl border-b-4 border-emerald-500 flex flex-col md:flex-row justify-between items-center gap-4 sticky top-0 z-40">
         <div class="flex items-center gap-4">
             <div class="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center shadow-lg">
@@ -107,7 +108,29 @@
         </div>
     </header>
 
-    <!-- ═══════════════════════════════════════════════ MAIN ═══ -->
+    <!-- STORYTELLING - A HISTÓRIA DO PROJETO -->
+    <div class="bg-gradient-to-r from-emerald-600 to-indigo-600 text-white rounded-3xl mx-6 mt-6 p-8 shadow-xl">
+        <div class="max-w-5xl mx-auto">
+            <h1 class="text-4xl font-bold mb-2">Sentinela V3.0</h1>
+            <p class="text-2xl opacity-90">De 7.118 boletos suspeitos para uma carteira limpa e rentável.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8 text-sm">
+                <div>
+                    <div class="uppercase text-emerald-200 tracking-widest text-xs mb-1">O Problema Encontrado</div>
+                    <p class="opacity-90">Alta concentração de fraudes, duplicatas, boletos zumbis, overpayments e lançamento retroativo de títulos.</p>
+                </div>
+                <div>
+                    <div class="uppercase text-emerald-200 tracking-widest text-xs mb-1">Nossa Solução</div>
+                    <p class="opacity-90">Deep EDA + Motor de Regras + Ensemble IA (Isolation Forest + LOF) + Explicabilidade total.</p>
+                </div>
+                <div>
+                    <div class="uppercase text-emerald-200 tracking-widest text-xs mb-1">Resultado Entregue</div>
+                    <p class="font-bold">924 boletos críticos bloqueados • R$ 87,8 Mi preservados • 49,1% da carteira recomendada para investimento seguro.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN -->
     <main class="p-6 max-w-7xl mx-auto space-y-6">
 
         <!-- ── KPIs Linha 1 ── -->
@@ -166,9 +189,9 @@
                 <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
                     <i class="fa-solid fa-chart-pie text-emerald-500"></i> Classificação Final Sentinela
                 </h2>
-                <div class="flex items-center gap-4 h-64">
-                    <div class="relative flex-1 h-full"><canvas id="chartDonut"></canvas></div>
-                    <div class="space-y-2 text-xs pr-2">
+                <div class="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-4 h-auto lg:h-64">
+                    <div class="relative flex-1 w-full h-64 lg:h-full"><canvas id="chartDonut"></canvas></div>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-1 gap-x-6 gap-y-3 text-xs w-full lg:w-auto lg:pr-2">
                         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span><div><p class="font-bold text-red-600">924</p><p class="text-slate-400">Crítico</p></div></div>
                         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-400 inline-block"></span><div><p class="font-bold text-orange-500">628</p><p class="text-slate-400">Alto Risco</p></div></div>
                         <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-sky-400 inline-block"></span><div><p class="font-bold text-sky-500">2.072</p><p class="text-slate-400">Médio Risco</p></div></div>
@@ -176,6 +199,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="chart-card bg-white p-5 rounded-xl shadow-sm">
                 <h2 class="text-xs font-bold text-slate-700 mb-1 uppercase tracking-widest flex items-center gap-2">
                     <i class="fa-solid fa-calendar-days text-indigo-400"></i> Anomalia Temporal — Emissões por Mês
@@ -187,7 +211,7 @@
             </div>
         </div>
 
-        <!-- ── Linha 4: Cluster + Scatter ── -->
+        <!-- Linha 4: Cluster + Scatter -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="chart-card bg-white p-5 rounded-xl shadow-sm">
                 <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
@@ -201,43 +225,6 @@
                 </h2>
                 <p class="text-[10px] text-slate-400 mb-2 border-b pb-2">Outliers detectados exclusivamente pelo Ensemble de Machine Learning destacados em vermelho.</p>
                 <div class="relative h-56"><canvas id="chartScatter"></canvas></div>
-            </div>
-        </div>
-
-        <!-- ── Linha 5: Liquidez CNPJs (EDA estático) ── -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="chart-card bg-white p-5 rounded-xl shadow-sm lg:col-span-2">
-                <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-droplet text-blue-400"></i> EDA · Segmentação de Liquidez dos CNPJs (Base Auxiliar)
-                </h2>
-                <div class="relative h-52"><canvas id="chartLiquidez"></canvas></div>
-            </div>
-            <div class="chart-card bg-white p-5 rounded-xl shadow-sm">
-                <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
-                    <i class="fa-solid fa-database text-slate-400"></i> EDA · Qualidade dos Dados (% Nulos)
-                </h2>
-                <div class="space-y-3 mt-4">
-                    <div>
-                        <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">Liquidez Cedente</span><span class="font-bold text-red-600">46,6%</span></div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-red-500 rounded-full" style="--target-w:46.6%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">UF (Auxiliar)</span><span class="font-bold text-orange-500">7,8%</span></div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-orange-400 rounded-full" style="--target-w:7.8%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">vlr_baixa (Boletos)</span><span class="font-bold text-amber-500">11,5%</span></div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-amber-400 rounded-full" style="--target-w:11.5%"></div></div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">dt_pagamento</span><span class="font-bold text-emerald-600">1,0%</span></div>
-                        <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-emerald-400 rounded-full" style="--target-w:1.0%"></div></div>
-                    </div>
-                    <div class="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-                        <i class="fa-solid fa-circle-info mr-1"></i>
-                        Imputação por <strong>mediana estatística</strong> aplicada nos campos críticos para evitar viés no modelo.
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -272,12 +259,13 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white text-slate-400 text-[10px] uppercase tracking-widest border-b">
-                                <th class="p-4 font-semibold">ID Transação</th>
-                                <th class="p-4 font-semibold">Valor Nominal</th>
-                                <th class="p-4 font-semibold text-center">Score</th>
-                                <th class="p-4 font-semibold text-center">Classificação</th>
-                                <th class="p-4 font-semibold w-1/3">Justificativa / Explicabilidade IA</th>
+                                <th class="p-4 font-semibold">Setor IBGE</th>
                                 <th class="p-4 font-semibold text-center">UF</th>
+                                <th class="p-4 font-semibold">Valor Nominal</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Score</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Classificação</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Dias Atraso</th>
+                                <th class="p-4 font-semibold">Justificativa</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-ameacas" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
@@ -286,14 +274,86 @@
             </div>
         </div>
 
-        <!-- ── Rodapé ── -->
+        <!-- RECOMENDAÇÕES POSITIVAS -->
+        <div class="chart-card bg-white p-5 rounded-3xl shadow-sm border border-emerald-200">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-sm font-bold text-emerald-700 uppercase tracking-widest flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check text-emerald-500"></i> Recomendações de Investimento
+                </h2>
+                <span id="rec-pct-badge" class="bg-emerald-100 text-emerald-700 text-xs font-bold px-4 py-1 rounded-3xl">— da carteira segura</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-emerald-50 rounded-2xl p-5 text-center">
+                    <p class="text-emerald-600 text-sm font-medium">Boletos Baixo Risco</p>
+                    <p id="rec-count" class="text-5xl font-bold text-emerald-700 mt-1">—</p>
+                    <p id="rec-volume" class="text-emerald-500 text-sm mt-1">calculando...</p>
+                    <div class="mt-4 inline-flex items-center gap-1 bg-white rounded-2xl px-4 py-1 text-xs font-medium text-emerald-600">
+                        <i class="fa-solid fa-check-circle"></i>
+                        Zero anomalias IA • Zero duplicatas • Zero zumbis
+                    </div>
+                </div>
+                <div class="bg-emerald-50 rounded-2xl p-5 text-center">
+                    <p class="text-emerald-600 text-sm font-medium">Ticket Médio Seguro</p>
+                    <p id="rec-ticket" class="text-4xl font-bold text-emerald-700 mt-1">—</p>
+                    <p id="rec-atraso" class="text-emerald-500 text-sm mt-1">Atraso mediano: —</p>
+                </div>
+                <div class="bg-emerald-50 rounded-2xl p-5 flex flex-col justify-between">
+                    <div class="text-center">
+                        <p class="text-emerald-600 text-sm font-medium">Top 3 UFs mais seguras</p>
+                        <p id="rec-ufs" class="text-3xl font-bold text-emerald-700 mt-3">—</p>
+                    </div>
+                    <button onclick="mostrarTopBaixoRisco()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-4 rounded-3xl transition flex items-center justify-center gap-2">
+                        Ver 10 melhores boletos para investimento <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Baixo Risco -->
+        <div id="modalBaixoRisco" class="fixed inset-0 bg-slate-900/80 z-50 hidden items-center justify-center backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-5xl overflow-hidden border-t-8 border-emerald-500 flex flex-col max-h-[90vh]">
+                <div class="flex justify-between items-center p-5 border-b bg-slate-50">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                            <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-slate-800 font-bold text-lg">Top 10 Boletos Recomendados para Investimento</h3>
+                            <p class="text-slate-400 text-xs">Baixo Risco · Zero anomalias IA · Zero duplicatas · Zero zumbis — ordenados por valor nominal</p>
+                        </div>
+                    </div>
+                    <button id="btnFecharBaixoRisco" class="text-slate-300 hover:text-red-500 transition text-2xl leading-none">&times;</button>
+                </div>
+                <div class="overflow-y-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-widest border-b sticky top-0">
+                                <th class="p-4 font-semibold">#</th>
+                                <th class="p-4 font-semibold">Setor IBGE</th>
+                                <th class="p-4 font-semibold text-center">UF</th>
+                                <th class="p-4 font-semibold">Valor Nominal</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Score</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Dias Atraso</th>
+                                <th class="p-4 font-semibold text-center whitespace-nowrap">Emissão</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-baixo-risco" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+                <div class="p-4 bg-slate-50 border-t flex justify-end">
+                    <button id="btnFecharBaixoRiscoBottom" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Fechar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rodapé -->
         <div class="text-center text-xs text-slate-400 py-4">
             Sentinela V3.0 · Núclea × FIAP Enterprise Challenge 2025/2026 · Pipeline: Ingestão → EDA → Pré-Proc → Join → APIs → Features → Regras → ML → Score
         </div>
     </main>
 
 
-    <!-- ══════════════════════════════════════ MODAL EDA PROFUNDA ══════════ -->
+    <!-- MODAL EDA PROFUNDA - VERSÃO FINAL CORRIGIDA -->
     <div id="modalEDA" class="fixed inset-0 bg-slate-900/80 z-50 hidden items-center justify-center backdrop-blur-sm">
         <div class="bg-white rounded-2xl shadow-2xl w-11/12 max-w-6xl overflow-hidden border-t-8 border-indigo-600 flex flex-col max-h-[95vh]">
             <div class="flex justify-between items-center p-5 border-b bg-slate-50">
@@ -367,6 +427,43 @@
                     </div>
                 </div>
 
+                <!-- Liquidez CNPJs -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="chart-card bg-white p-5 rounded-xl shadow-sm lg:col-span-2">
+                        <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-droplet text-blue-400"></i> Segmentação de Liquidez dos CNPJs (Base Auxiliar)
+                        </h2>
+                        <div class="relative h-52"><canvas id="chartLiquidez"></canvas></div>
+                    </div>
+                    <div class="chart-card bg-white p-5 rounded-xl shadow-sm">
+                        <h2 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-widest border-b pb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-database text-slate-400"></i> Qualidade dos Dados (% Nulos)
+                        </h2>
+                        <div class="space-y-3 mt-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">Liquidez Cedente</span><span class="font-bold text-red-600">46,6%</span></div>
+                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-red-500 rounded-full" style="--target-w:46.6%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">UF (Auxiliar)</span><span class="font-bold text-orange-500">7,8%</span></div>
+                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-orange-400 rounded-full" style="--target-w:7.8%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">vlr_baixa (Boletos)</span><span class="font-bold text-amber-500">11,5%</span></div>
+                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-amber-400 rounded-full" style="--target-w:11.5%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-600">dt_pagamento</span><span class="font-bold text-emerald-600">1,0%</span></div>
+                                <div class="h-2 bg-slate-100 rounded-full overflow-hidden"><div class="bar-fill h-full bg-emerald-400 rounded-full" style="--target-w:1.0%"></div></div>
+                            </div>
+                            <div class="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+                                <i class="fa-solid fa-circle-info mr-1"></i>
+                                Imputação por <strong>mediana estatística</strong> aplicada nos campos críticos para evitar viés no modelo.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tabela resumo executivo -->
                 <div class="bg-slate-900 text-white rounded-xl p-5 font-mono-custom text-xs">
                     <p class="text-emerald-400 font-bold mb-3 text-sm">// SUMÁRIO EXECUTIVO — MOTOR SENTINELA V3.0</p>
@@ -391,79 +488,144 @@
         </div>
     </div>
 
-
-    <!-- ══════════════════════════════════════ MODAL CÓDIGO PYTHON ══════════ -->
+    <!--  MODAL CÓDIGO PYTHON -->
     <div id="modalPython" class="fixed inset-0 bg-slate-900/80 z-50 hidden items-center justify-center backdrop-blur-sm">
         <div class="bg-slate-800 rounded-2xl shadow-2xl w-11/12 max-w-5xl overflow-hidden border border-slate-600 flex flex-col max-h-[90vh]">
             <div class="flex justify-between items-center p-4 border-b border-slate-700 bg-slate-900">
                 <div class="flex items-center gap-3">
                     <i class="fa-brands fa-python text-yellow-400 text-2xl"></i>
                     <div>
-                        <h3 class="text-white font-bold text-lg" style="font-family:'Syne',sans-serif">Under the Hood — Engine V3.0</h3>
-                        <p class="text-slate-400 text-xs">Lógica preditiva · Ensemble IF + LOF · XAI</p>
+                        <h3 class="text-white font-bold text-lg" style="font-family:'Syne',sans-serif">Motor Sentinela V3.0 — Engine de IA</h3>
+                        <p class="text-emerald-400 text-xs">Isolation Forest + LOF + XAI • Ensemble Explicável</p>
                     </div>
                 </div>
-                <button id="btnFecharModal" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+                <button id="btnFecharModal" class="text-slate-400 hover:text-white text-3xl leading-none">&times;</button>
             </div>
-            <div class="p-6 overflow-y-auto bg-[#282c34] text-sm space-y-6">
+
+            <div class="p-6 overflow-y-auto bg-[#282c34] text-sm space-y-8 font-mono-custom">
+
+                <!-- 1. ISOLATION FOREST -->
                 <div>
-                    <h4 class="text-yellow-400 font-bold mb-2 text-xs uppercase tracking-widest">// 1. ENSEMBLE DE MACHINE LEARNING (IF + LOF)</h4>
-                    <pre><code class="language-python rounded-lg"># RobustScaler + PCA (15 componentes, preserva variância)
-scaler = RobustScaler()
-X_scaled = scaler.fit_transform(X_features)
-pca = PCA(n_components=15, random_state=42)
-X_pca = pca.fit_transform(X_scaled)
+                    <h4 class="text-yellow-400 font-bold mb-3 text-xs uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-tree"></i>
+                        1. ISOLATION FOREST (IF) — O ALGORITMO ESCOLHIDO
+                    </h4>
+                    <div class="bg-slate-900/70 p-4 rounded-xl text-slate-300 text-[13px] leading-relaxed">
+                        O <strong>Isolation Forest</strong> é um algoritmo de detecção de anomalias <strong>não-supervisionado</strong> que funciona dividindo aleatoriamente o espaço de features até isolar cada ponto.<br><br>
+                        <strong>Por que ele é perfeito para fraudes?</strong><br>
+                        • Anomalias (fraudes) são raras → são isoladas com <strong>muito menos divisões</strong><br>
+                        • Não precisa de dados rotulados (ideal para o mundo real de FIDC)<br>
+                        • Extremamente rápido em alta dimensionalidade (depois do PCA)<br>
+                        • Robusto a outliers e escalonamento
+                    </div>
 
-# Contamination rate ADAPTATIVO baseado nos sinais da EDA
-contamination_rate = max(0.008, min(0.025, sinais_fraude * 1.8))  # → 0.015
+                    <pre class="mt-4 text-xs bg-slate-900 p-4 rounded-xl overflow-auto"><code class="language-python"># ETAPA 8 — Isolation Forest + LOF (código real do Sentinela_FIDC.py)
 
-# Modelo 1: Isolation Forest (anomalias globais em florestas aleatórias)
-modelo_if = IsolationForest(n_estimators=300, contamination=contamination_rate, random_state=42)
-modelo_if.fit(X_pca)
+    # 1. Features selecionadas (20+ variáveis comportamentais + temporais)
+    features_iforest = ['vlr_nominal', 'desvio_ticket_pagador', 'desvio_ticket_beneficiario',
+                        'freq_dupla_pag_benef', 'share_financeiro_benef', 'z_score_setorial',
+                        'z_score_uf', 'dias_desde_ultimo_boleto_pagador', ...]
 
-# Modelo 2: Local Outlier Factor (anomalias por densidade local)
-modelo_lof = LocalOutlierFactor(n_neighbors=20, contamination=contamination_rate)
-lof_scores = modelo_lof.fit_predict(X_pca)
+    X_iforest = df_sentinela[features_iforest].copy()
 
-# ENSEMBLE: fraude confirmada se capturada por QUALQUER vetor matemático
-df['flag_fraude_ia'] = np.where(
-    (modelo_if.predict(X_pca) == -1) | (lof_scores == -1), 1, 0
-)
-# Resultado: 107 anomalias (IF) | ensemble final = 107 boletos</code></pre>
+    # 2. Pré-processamento robusto
+    X_iforest = X_iforest.replace([np.inf, -np.inf], np.nan).fillna(0)
+    for col in X_iforest.columns:                                      # Winsorização P1-P99
+        X_iforest[col] = X_iforest[col].clip(lower=X_iforest[col].quantile(0.01),
+                                            upper=X_iforest[col].quantile(0.99))
+
+    scaler = RobustScaler()
+    X_scaled = scaler.fit_transform(X_iforest)
+
+    pca = PCA(n_components=15, random_state=42)                        # Reduz dimensionalidade
+    X_pca = pca.fit_transform(X_scaled)
+
+    # 3. Contamination rate adaptativo (baseado na EDA)
+    sinais_fraude = (df_sentinela['flag_duplicata_transacional'].mean() +
+                    df_sentinela['flag_overpayment_alto'].mean() + ...) / 5
+    contamination_rate = max(0.008, min(0.025, sinais_fraude * 1.8))
+
+    # 4. Modelo principal
+    modelo_if = IsolationForest(n_estimators=300, contamination=contamination_rate,
+                                max_samples='auto', random_state=42, n_jobs=-1)
+    modelo_if.fit(X_pca)
+
+    # 5. Ensemble com Local Outlier Factor (densidade local)
+    modelo_lof = LocalOutlierFactor(n_neighbors=20, contamination=contamination_rate, n_jobs=-1)
+    lof_scores = modelo_lof.fit_predict(X_pca)
+
+    # 6. Flag final da IA
+    df_sentinela['flag_fraude_ia'] = np.where(
+        (modelo_if.predict(X_pca) == -1) | (lof_scores == -1), 1, 0)
+    </code></pre>
                 </div>
+
+                <!-- 2. EXPLAINABLE AI -->
                 <div>
-                    <h4 class="text-emerald-400 font-bold mb-2 text-xs uppercase tracking-widest">// 2. EXPLAINABLE AI (XAI — Percentis de Referência)</h4>
-                    <pre><code class="language-python rounded-lg">_refs = {col: {'p95': df[col].quantile(0.95), 'p99': df[col].quantile(0.99)}
-         for col in _features_explic}
+                    <h4 class="text-emerald-400 font-bold mb-2 text-xs uppercase tracking-widest">// 2. EXPLAINABLE AI (XAI) — Percentis de Referência</h4>
+                    <pre><code class="language-python"># Explicabilidade simples e transparente para cada anomalia
+    def _explicar(linha):
+        motivos = []
+        if linha['vlr_nominal'] >= _refs['vlr_nominal']['p99']:
+            motivos.append("vlr_nominal extremamente alto")
+        if linha['desvio_ticket_pagador'] >= _refs['desvio_ticket_pagador']['p95']:
+            motivos.append("foge do padrão histórico do pagador")
+        # ... (outras 7 regras)
+        return " | ".join(motivos) if motivos else "combinação multivariada fora do padrão"
 
-def _explicar(linha):
-    motivos = []
-    if linha['vlr_nominal'] >= _refs['vlr_nominal']['p99']:
-        motivos.append("vlr_nominal extremamente alto")
-    if linha['desvio_ticket_pagador'] >= _refs['desvio_ticket_pagador']['p95']:
-        motivos.append("foge do padrão histórico do pagador")
-    if linha['freq_dupla_pag_benef'] >= _refs['freq_dupla_pag_benef']['p99']:
-        motivos.append("repetição anormal entre estas duas empresas")
-    return " | ".join(motivos) if motivos else "combinação multivariada fora do padrão"
-
-df['motivo_anomalia_ia'] = np.where(df['flag_fraude_ia'] == 1,
-                                     df.apply(_explicar, axis=1), 'não aplicável')</code></pre>
+    df_sentinela['motivo_anomalia_ia'] = np.where(df_sentinela['flag_fraude_ia'] == 1,
+                                                df_sentinela.apply(_explicar, axis=1), 'não aplicável')
+    </code></pre>
                 </div>
+
+                <!-- 3. CONTEXTO MACRO + Z-SCORE -->
                 <div>
-                    <h4 class="text-blue-400 font-bold mb-2 text-xs uppercase tracking-widest">// 3. CONTEXTO MACROECONÔMICO (API BACEN) + Z-SCORE SETORIAL</h4>
-                    <pre><code class="language-python rounded-lg"># BACEN Open Data → Selic atual
-selic_atual = 14.75  # % a.a. → fator_risco_macro = +5 pts (threshold > 10%)
-df['pontuacao_risco'] += fator_risco_macro  # todos os boletos pré-carregados com +5
+                    <h4 class="text-blue-400 font-bold mb-2 text-xs uppercase tracking-widest">// 3. CONTEXTO MACROECONÔMICO + Z-SCORE SETORIAL</h4>
+                    <pre><code class="language-python"># API BACEN → Selic atual
+    selic_atual = float(requests.get("https://api.bcb.gov.br/...").json()[0]['valor'])
+    fator_risco_macro = 5 if selic_atual > 10.0 else 0
 
-# Z-Score setorial (CNAE do beneficiário via API IBGE)
-cnae_stats = df.groupby('cd_cnae_prin_beneficiario')['vlr_nominal']\
-               .agg(['mean','std']).rename(columns={...})
-df['z_score_setorial'] = (df['vlr_nominal'] - df['vlr_medio_cnae']) / df['vlr_std_cnae']
-df['flag_anomalia_setorial'] = np.where(df['z_score_setorial'] > 3, 1, 0)</code></pre>
+    # Z-Score Setorial (IBGE CNAE)
+    cnae_stats = df_sentinela.groupby('cd_cnae_prin_beneficiario')['vlr_nominal'].agg(['mean','std'])
+    df_sentinela['z_score_setorial'] = (df_sentinela['vlr_nominal'] - vlr_medio_cnae) / vlr_std_cnae
+    </code></pre>
                 </div>
+
+                <!-- COMPARAÇÃO MLOps -->
+                <div class="border-t border-slate-700 pt-6">
+                    <h4 class="text-indigo-400 font-bold mb-4 text-xs uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-balance-scale"></i>
+                        4. COMPARAÇÃO COM OUTROS FRAMEWORKS MLOPS
+                    </h4>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-slate-300 border-collapse">
+                            <thead>
+                                <tr class="bg-slate-900 text-emerald-400">
+                                    <th class="p-3 text-left">Critério</th>
+                                    <th class="p-3 text-center">Sentinela V3.0</th>
+                                    <th class="p-3 text-center">MLflow</th>
+                                    <th class="p-3 text-center">Kubeflow</th>
+                                    <th class="p-3 text-center">ZenML</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-700">
+                                <tr><td class="p-3">Tamanho / Complexidade</td><td class="text-center text-emerald-400 font-bold">Leve (1 arquivo)</td><td class="text-center">Médio</td><td class="text-center">Pesado (Kubernetes)</td><td class="text-center">Médio</td></tr>
+                                <tr><td class="p-3">Custo de infraestrutura</td><td class="text-center text-emerald-400 font-bold">Zero</td><td class="text-center">Baixo</td><td class="text-center">Alto</td><td class="text-center">Médio</td></tr>
+                                <tr><td class="p-3">Detecção de anomalias em tempo real</td><td class="text-center text-emerald-400 font-bold">✅ Nativo (IF+LOF)</td><td class="text-center">Não</td><td class="text-center">Sim (com extra)</td><td class="text-center">Sim</td></tr>
+                                <tr><td class="p-3">Explainability (XAI) integrada</td><td class="text-center text-emerald-400 font-bold">✅ Percentis + motivos</td><td class="text-center">Parcial</td><td class="text-center">Parcial</td><td class="text-center">Boa</td></tr>
+                                <tr><td class="p-3">Contamination adaptativo (EDA-driven)</td><td class="text-center text-emerald-400 font-bold">✅ Automático</td><td class="text-center">Manual</td><td class="text-center">Manual</td><td class="text-center">Manual</td></tr>
+                                <tr><td class="p-3">Deploy em Power BI / Dashboard</td><td class="text-center text-emerald-400 font-bold">✅ Instantâneo</td><td class="text-center">Precisa de extra</td><td class="text-center">Complexo</td><td class="text-center">Precisa de extra</td></tr>
+                                <tr><td class="p-3">Tempo de execução (este projeto)</td><td class="text-center text-emerald-400 font-bold">~45 segundos</td><td class="text-center">+ overhead</td><td class="text-center">Minutos</td><td class="text-center">Minutos</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-3 text-center">Sentinela V3.0 foi projetado para ser <strong>leve, explicável e 100% integrado ao Power BI</strong> — ideal para equipes de auditoria e compliance.</p>
+                </div>
+
             </div>
+
             <div class="p-4 bg-slate-900 border-t border-slate-700 flex justify-end">
-                <button id="btnFecharModalBottom" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Entendido</button>
+                <button id="btnFecharModalBottom" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Entendido — Voltar ao Painel</button>
             </div>
         </div>
     </div>
@@ -653,16 +815,92 @@ df['flag_anomalia_setorial'] = np.where(df['z_score_setorial'] > 3, 1, 0)</code>
 
     // Variável global
     let baseCriticos = [];
+    let todosValidos = [];
+
+    // Calcula dias entre dois campos de data do registro
+    function calcDias(d) {
+        if (!d.dt_pagamento || !d.dt_vencimento) return null;
+        const pag  = new Date(d.dt_pagamento);
+        const venc = new Date(d.dt_vencimento);
+        if (isNaN(pag) || isNaN(venc)) return null;
+        return Math.round((pag - venc) / 864e5);
+    }
+
+    // Formata dias de atraso com cor
+    function formatDias(dias) {
+        if (dias === null) return '<span class="text-slate-400 text-xs">—</span>';
+        if (dias < 0)    return `<span class="text-emerald-600 font-bold text-xs">${Math.abs(dias)}d antecip.</span>`;
+        if (dias === 0)  return '<span class="text-emerald-500 text-xs font-bold">No prazo</span>';
+        if (dias > 365)  return `<span class="text-red-600 font-extrabold text-xs">${dias}d ⚠</span>`;
+        if (dias > 90)   return `<span class="text-orange-500 font-bold text-xs">${dias}d</span>`;
+        return `<span class="text-slate-600 text-xs">${dias}d</span>`;
+    }
+
+    // Traduz nomes técnicos de features para linguagem de negócio
+    function traduzirMotivo(raw) {
+        if (!raw || raw === 'não aplicável' || raw === 'N/A')
+            return 'Anomalia multivariada detectada pelo Ensemble IA';
+        return raw
+            .replace(/vlr_nominal extremamente alto/g,                      'Valor muito acima do P99 da carteira')
+            .replace(/vlr_nominal acima do padrão/g,                        'Valor acima do padrão da carteira')
+            .replace(/desvio_ticket_pagador extremamente alto/g,             'Gasto muito acima do histórico do pagador')
+            .replace(/desvio_ticket_pagador acima do padrão/g,              'Gasto acima do histórico do pagador')
+            .replace(/desvio_ticket_beneficiario extremamente alto/g,        'Recebimento muito acima do histórico do beneficiário')
+            .replace(/desvio_ticket_beneficiario acima do padrão/g,         'Recebimento acima do histórico do beneficiário')
+            .replace(/freq_dupla_pag_benef extremamente alto/g,              'Frequência muito anormal entre estas empresas')
+            .replace(/freq_dupla_pag_benef acima do padrão/g,               'Frequência anormal entre estas empresas')
+            .replace(/qtd_mesmo_dia_pagador extremamente alto/g,             'Emissão em lote suspeito (mesmo dia)')
+            .replace(/qtd_mesmo_dia_pagador acima do padrão/g,              'Muitos boletos emitidos no mesmo dia')
+            .replace(/dias_desde_ultimo_boleto_pagador extremamente baixo/g, 'Intervalo mínimo entre emissões (emissão em rajada)')
+            .replace(/dias_desde_ultimo_boleto_pagador extremamente alto/g,  'Pagador inativo por período prolongado')
+            .replace(/dias_desde_ultimo_boleto_pagador acima do padrão/g,   'Intervalo elevado entre emissões')
+            .replace(/z_score_setorial extremamente alto/g,                  'Valor muito acima do padrão do setor IBGE')
+            .replace(/z_score_setorial acima do padrão/g,                   'Valor acima do padrão do setor IBGE')
+            .replace(/z_score_uf extremamente alto/g,                        'Valor muito acima do padrão da UF')
+            .replace(/z_score_uf acima do padrão/g,                         'Valor acima do padrão da UF')
+            .replace(/share_financeiro_benef acima do padrão/g,             'Beneficiário concentra volume financeiro anormal')
+            .replace(/combinação multivariada fora do padrão/g,             'Anomalia multivariada detectada pelo Ensemble IA');
+    }
 
     // Processamento do CSV
     function processarDados(data) {
         const validos = data.filter(d => d.id_boleto && d.classificacao_sentinela);
+        todosValidos = validos;
         baseCriticos = validos.filter(d => d.classificacao_sentinela.includes('CR') || d.pontuacao_risco >= 60);
 
         const totalCapital = baseCriticos.reduce((acc, val) => acc + (parseFloat(val.vlr_nominal) || 0), 0);
         document.getElementById('kpi-volume').innerText  = validos.length.toLocaleString('pt-BR');
         document.getElementById('kpi-malha').innerText   = baseCriticos.length.toLocaleString('pt-BR');
         document.getElementById('kpi-capital').innerText = 'R$ ' + (totalCapital / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Mi';
+
+        // ── Baixo Risco (recomendações) ──────────────────────────────────────
+        const baixoRisco = validos.filter(d =>
+            d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
+            d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
+        );
+        const nBaixo      = baixoRisco.length;
+        const vlrBaixo    = baixoRisco.reduce((s,d) => s + (parseFloat(d.vlr_nominal)||0), 0);
+        const ticketMedio = nBaixo > 0 ? vlrBaixo / nBaixo : 0;
+        const pctSegura   = (nBaixo / validos.length * 100).toFixed(1);
+
+        // Atraso mediano dos boletos de baixo risco
+        const atrasosBaixo = baixoRisco.map(d => calcDias(d)).filter(v => v !== null && v >= 0);
+        const atrasosBaixoSorted = [...atrasosBaixo].sort((a,b)=>a-b);
+        const medAtraso = atrasosBaixoSorted.length
+            ? atrasosBaixoSorted[Math.floor(atrasosBaixoSorted.length/2)]
+            : 0;
+
+        // Top 3 UFs dos boletos de baixo risco
+        const ufBaixo = {};
+        baixoRisco.forEach(d => { const u = d.uf_pagador||'NI'; ufBaixo[u] = (ufBaixo[u]||0)+1; });
+        const top3UF = Object.entries(ufBaixo).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' • ');
+
+        document.getElementById('rec-pct-badge').textContent = pctSegura + '% da carteira segura';
+        document.getElementById('rec-count').textContent     = nBaixo.toLocaleString('pt-BR');
+        document.getElementById('rec-volume').textContent    = 'R$ ' + (vlrBaixo/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' Mi em volume';
+        document.getElementById('rec-ticket').textContent    = 'R$ ' + ticketMedio.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+        document.getElementById('rec-atraso').textContent    = 'Atraso mediano: ' + medAtraso + ' dias';
+        document.getElementById('rec-ufs').textContent       = top3UF || '—';
 
         // Anatomia
         const anatomia = {
@@ -732,11 +970,11 @@ df['flag_anomalia_setorial'] = np.where(df['z_score_setorial'] > 3, 1, 0)</code>
         }
 
         const configs = {
-            ia:        { flag: d => d.flag_fraude_ia == 1,                titulo: '<i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)', motivo: null },
-            zumbi:     { flag: d => d.flag_boleto_zumbi == 1,             titulo: '<i class="fa-solid fa-skull text-emerald-500 mr-2"></i>Boletos Zumbis Isolados', motivo: 'Atraso severo (>365 dias) com Sacado sem liquidez' },
-            colusao:   { flag: d => d.flag_colusao == 1,                  titulo: '<i class="fa-solid fa-network-wired text-emerald-500 mr-2"></i>Tentativas de Colusão / Auto-Faturamento', motivo: 'Pagador e Recebedor do mesmo CNAE e UF operando em rede' },
-            setorial:  { flag: d => d.flag_anomalia_setorial == 1,        titulo: '<i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>Distorção Estatística de Z-Score Setorial', motivo: 'Valor nominal diverge da média do Setor CNAE (IBGE) em > 3σ' },
-            duplicata: { flag: d => d.flag_duplicata_transacional == 1,   titulo: '<i class="fa-solid fa-copy text-emerald-500 mr-2"></i>Duplicatas Transacionais', motivo: 'Mesmo pagador, beneficiário, valor e data — ID diferente' }
+            ia:        { flag: d => d.flag_fraude_ia == 1,               titulo: '<i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)', motivo: null },
+            zumbi:     { flag: d => d.flag_boleto_zumbi == 1,            titulo: '<i class="fa-solid fa-skull text-emerald-500 mr-2"></i>Boletos Zumbis Isolados', motivo: null, isZumbi: true },
+            colusao:   { flag: d => d.flag_colusao == 1,                 titulo: '<i class="fa-solid fa-network-wired text-emerald-500 mr-2"></i>Tentativas de Colusão / Auto-Faturamento', motivo: 'Pagador e Recebedor do mesmo CNAE e UF operando em rede fechada (auto-faturamento)' },
+            setorial:  { flag: d => d.flag_anomalia_setorial == 1,       titulo: '<i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>Distorção Estatística de Z-Score Setorial', motivo: 'Valor nominal diverge mais de 3σ da média do setor CNAE (IBGE) — provável título fora do perfil' },
+            duplicata: { flag: d => d.flag_duplicata_transacional == 1,  titulo: '<i class="fa-solid fa-copy text-emerald-500 mr-2"></i>Duplicatas Transacionais', motivo: 'Mesmo pagador, beneficiário, valor e data de emissão com ID diferente — risco de dupla cobrança' }
         };
         const cfg = configs[tipo] || configs.ia;
         document.getElementById('titulo-tabela').innerHTML = cfg.titulo;
@@ -747,30 +985,85 @@ df['flag_anomalia_setorial'] = np.where(df['z_score_setorial'] > 3, 1, 0)</code>
         tbody.innerHTML = '';
 
         if(top5.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="p-6 text-center text-slate-400 text-sm">Nenhum registro encontrado para este filtro.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400 text-sm">Nenhum registro encontrado para este filtro.</td></tr>';
             return;
         }
 
         top5.forEach(d => {
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-50 transition';
-            const motivo = cfg.motivo
-                ? cfg.motivo
-                : ((d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A')
-                   ? d.motivo_anomalia_ia : 'Anomalia estrutural multivariada (combinação de features)');
-            const cl = d.classificacao_sentinela || '';
-            const tagClass = cl.includes('CRÍTICO') ? 'tag-critico' : cl.includes('ALTO') ? 'tag-alto' : cl.includes('MÉDIO') ? 'tag-medio' : 'tag-baixo';
+
+            const dias = calcDias(d);
+
+            // Motivo: para zumbi mostra dias reais; para IA traduz; para outros usa fixo
+            let motivo;
+            if (cfg.isZumbi) {
+                const diasStr = dias !== null && dias > 0 ? `${dias} dias` : 'prazo não identificado';
+                motivo = `Boleto em atraso há <strong>${diasStr}</strong> com sacado sem liquidez (índice < 0,30) — título "morto" na carteira`;
+            } else if (cfg.motivo) {
+                motivo = cfg.motivo;
+            } else {
+                const rawMotivo = d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A'
+                    ? d.motivo_anomalia_ia : null;
+                motivo = traduzirMotivo(rawMotivo);
+            }
+
+            const cl       = d.classificacao_sentinela || '';
+            const tagClass  = cl.includes('CRÍTICO') ? 'tag-critico' : cl.includes('ALTO') ? 'tag-alto' : cl.includes('MÉDIO') ? 'tag-medio' : 'tag-baixo';
+            const setorTxt  = (d.setor_oficial_ibge || 'Setor não identificado');
+            const setorAbr  = setorTxt.length > 38 ? setorTxt.substring(0,36)+'…' : setorTxt;
+
             tr.innerHTML = `
-                <td class="p-4 font-mono-custom text-[10px] text-slate-400">${String(d.id_boleto).substring(0,10)}…</td>
-                <td class="p-4 font-bold text-red-600 text-sm">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                <td class="p-4 text-center"><span class="bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
-                <td class="p-4 text-center"><span class="px-2 py-1 rounded text-xs font-bold ${tagClass}">${cl.split('(')[0].trim()}</span></td>
-                <td class="p-4 text-xs text-slate-600 font-medium">${motivo}</td>
+                <td class="p-4 text-xs text-slate-700 font-medium" title="${setorTxt}">${setorAbr}</td>
                 <td class="p-4 text-center font-bold text-sm">${d.uf_pagador || 'NI'}</td>
+                <td class="p-4 font-bold text-red-600 text-sm whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="px-2 py-1 rounded text-xs font-bold ${tagClass}">${cl.split('(')[0].trim()}</span></td>
+                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias)}</td>
+                <td class="p-4 text-xs text-slate-600">${motivo}</td>
             `;
             tbody.appendChild(tr);
         });
     }
+
+    // Modal baixo risco
+    function mostrarTopBaixoRisco() {
+        const baixoRisco = todosValidos
+            .filter(d =>
+                d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
+                d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
+            )
+            .sort((a,b) => (parseFloat(b.vlr_nominal)||0) - (parseFloat(a.vlr_nominal)||0))
+            .slice(0, 10);
+
+        const tbody = document.getElementById('tbody-baixo-risco');
+        tbody.innerHTML = '';
+        baixoRisco.forEach((d, i) => {
+            const dias   = calcDias(d);
+            const setor  = (d.setor_oficial_ibge || 'Não identificado');
+            const setorA = setor.length > 42 ? setor.substring(0,40)+'…' : setor;
+            const emissao = d.dt_emissao ? new Date(d.dt_emissao).toLocaleDateString('pt-BR') : '—';
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-emerald-50 transition';
+            tr.innerHTML = `
+                <td class="p-4 text-slate-400 font-bold text-sm">${i+1}</td>
+                <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorA}</td>
+                <td class="p-4 text-center font-bold">${d.uf_pagador||'NI'}</td>
+                <td class="p-4 font-bold text-emerald-700 whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold whitespace-nowrap">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
+                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias)}</td>
+                <td class="p-4 text-center text-xs text-slate-500">${emissao}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        const modal = document.getElementById('modalBaixoRisco');
+        modal.classList.remove('hidden'); modal.classList.add('flex');
+    }
+
+    document.getElementById('btnFecharBaixoRisco').onclick       = () => { const m = document.getElementById('modalBaixoRisco'); m.classList.add('hidden'); m.classList.remove('flex'); };
+    document.getElementById('btnFecharBaixoRiscoBottom').onclick  = () => { const m = document.getElementById('modalBaixoRisco'); m.classList.add('hidden'); m.classList.remove('flex'); };
+    window.addEventListener('click', e => { const m = document.getElementById('modalBaixoRisco'); if(e.target === m){ m.classList.add('hidden'); m.classList.remove('flex'); } });
 
     // Modais
     const modalPython = document.getElementById('modalPython');
