@@ -43,6 +43,14 @@
         /* Scroll suave no modal EDA */
         #modalEDA .overflow-y-auto { scroll-behavior: smooth; }
 
+        /* Colunas ordenáveis */
+        .th-sort { cursor: pointer; user-select: none; white-space: nowrap; }
+        .th-sort:hover { color: #1e293b; background: #f8fafc; }
+        .th-sort .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.35; font-size: 9px; }
+        .th-sort.asc  .sort-icon::after { content: '▲'; opacity: 1; }
+        .th-sort.desc .sort-icon::after { content: '▼'; opacity: 1; }
+        .th-sort:not(.asc):not(.desc) .sort-icon::after { content: '⇅'; }
+
         .nav-pill {
             cursor: pointer;
             transition: all 0.2s;
@@ -257,14 +265,14 @@
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
+                        <thead id="thead-main">
                             <tr class="bg-white text-slate-400 text-[10px] uppercase tracking-widest border-b">
-                                <th class="p-4 font-semibold">Setor IBGE</th>
-                                <th class="p-4 font-semibold text-center">UF</th>
-                                <th class="p-4 font-semibold">Valor Nominal</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Score</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Classificação</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Dias Atraso</th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortMain('setor')">Setor IBGE<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('uf')">UF<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortMain('vlr')">Valor Nominal<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('score')">Score<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold text-center">Classificação</th>
+                                <th class="p-4 font-semibold th-sort text-center" id="th-dias-label" onclick="sortMain('dias')">Dias Atraso<span class="sort-icon"></span></th>
                                 <th class="p-4 font-semibold">Justificativa</th>
                             </tr>
                         </thead>
@@ -303,7 +311,7 @@
                         <p id="rec-ufs" class="text-3xl font-bold text-emerald-700 mt-3">—</p>
                     </div>
                     <button onclick="mostrarTopBaixoRisco()" class="mt-6 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-bold py-4 rounded-3xl transition flex items-center justify-center gap-2">
-                        Ver 10 melhores boletos para investimento <i class="fa-solid fa-arrow-right"></i>
+                        Ver melhores boletos para investimento <i class="fa-solid fa-arrow-right"></i>
                     </button>
                 </div>
             </div>
@@ -318,30 +326,29 @@
                             <i class="fa-solid fa-circle-check text-emerald-600 text-xl"></i>
                         </div>
                         <div>
-                            <h3 class="text-slate-800 font-bold text-lg">Top 10 Boletos Recomendados para Investimento</h3>
-                            <p class="text-slate-400 text-xs">Baixo Risco · Zero anomalias IA · Zero duplicatas · Zero zumbis — ordenados por valor nominal</p>
+                            <h3 class="text-slate-800 font-bold text-lg">Boletos Recomendados para Investimento</h3>
+                            <p class="text-slate-400 text-xs">Baixo Risco · Zero anomalias IA · Zero duplicatas · Zero zumbis — clique nas colunas para ordenar</p>
                         </div>
                     </div>
-                    <button id="btnFecharBaixoRisco" class="text-slate-300 hover:text-red-500 transition text-2xl leading-none">&times;</button>
+                    <button onclick="fecharModalBR()" class="text-slate-300 hover:text-red-500 transition text-2xl leading-none">&times;</button>
                 </div>
-                <div class="overflow-y-auto">
+                <div class="overflow-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-widest border-b sticky top-0">
-                                <th class="p-4 font-semibold">#</th>
-                                <th class="p-4 font-semibold">Setor IBGE</th>
-                                <th class="p-4 font-semibold text-center">UF</th>
-                                <th class="p-4 font-semibold">Valor Nominal</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Score</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Dias Atraso</th>
-                                <th class="p-4 font-semibold text-center whitespace-nowrap">Emissão</th>
+                        <thead class="sticky top-0 z-10">
+                            <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-widest border-b">
+                                <th class="p-4 font-semibold th-sort" onclick="sortBR('setor')">Setor IBGE<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('uf')">UF<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortBR('vlr')">Valor Nominal<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('score')">Score<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('dias')">Dias Atraso<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('emissao')">Emissão<span class="sort-icon"></span></th>
                             </tr>
                         </thead>
                         <tbody id="tbody-baixo-risco" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
                 <div class="p-4 bg-slate-50 border-t flex justify-end">
-                    <button id="btnFecharBaixoRiscoBottom" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Fechar</button>
+                    <button onclick="fecharModalBR()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Fechar</button>
                 </div>
             </div>
         </div>
@@ -813,26 +820,47 @@
         }
     });
 
-    // Variável global
+    // ── GLOBALS ──────────────────────────────────────────────────────────────
     let baseCriticos = [];
     let todosValidos = [];
 
-    // Calcula dias entre dois campos de data do registro
-    function calcDias(d) {
+    // Sort state: main table e modal baixo risco
+    let mainRows  = [];   // todos os rows do filtro atual (sem limite)
+    let mainSort  = { col: 'vlr', dir: -1 };
+    let mainTipo  = 'ia';
+    let brRows    = [];   // baixo risco modal
+    let brSort    = { col: 'vlr', dir: -1 };
+
+    // ── HELPERS ──────────────────────────────────────────────────────────────
+
+    // Dias de atraso: dt_pagamento − dt_vencimento  (positivo = atrasado)
+    function calcDiasVencto(d) {
         if (!d.dt_pagamento || !d.dt_vencimento) return null;
-        const pag  = new Date(d.dt_pagamento);
-        const venc = new Date(d.dt_vencimento);
-        if (isNaN(pag) || isNaN(venc)) return null;
-        return Math.round((pag - venc) / 864e5);
+        const a = new Date(d.dt_pagamento), b = new Date(d.dt_vencimento);
+        if (isNaN(a) || isNaN(b)) return null;
+        return Math.round((a - b) / 864e5);
     }
 
-    // Formata dias de atraso com cor
-    function formatDias(dias) {
-        if (dias === null) return '<span class="text-slate-400 text-xs">—</span>';
-        if (dias < 0)    return `<span class="text-emerald-600 font-bold text-xs">${Math.abs(dias)}d antecip.</span>`;
-        if (dias === 0)  return '<span class="text-emerald-500 text-xs font-bold">No prazo</span>';
-        if (dias > 365)  return `<span class="text-red-600 font-extrabold text-xs">${dias}d ⚠</span>`;
-        if (dias > 90)   return `<span class="text-orange-500 font-bold text-xs">${dias}d</span>`;
+    // Dias desde emissão: dt_pagamento − dt_emissao  (usado nos Zumbis)
+    function calcDiasEmissao(d) {
+        if (!d.dt_pagamento || !d.dt_emissao) return null;
+        const a = new Date(d.dt_pagamento), b = new Date(d.dt_emissao);
+        if (isNaN(a) || isNaN(b)) return null;
+        return Math.round((a - b) / 864e5);
+    }
+
+    // Renderiza badge de dias com cor contextual
+    function formatDias(dias, isZumbi) {
+        if (dias === null) return '<span class="text-slate-300 text-xs">—</span>';
+        if (isZumbi) {
+            // Para zumbi sempre > 0 e normalmente grande
+            const cor = dias > 365 ? 'text-red-600 font-extrabold' : dias > 180 ? 'text-orange-500 font-bold' : 'text-amber-600 font-bold';
+            return `<span class="${cor} text-xs">${dias}d</span>`;
+        }
+        if (dias < 0)   return `<span class="text-emerald-500 text-xs font-medium">${Math.abs(dias)}d antecip.</span>`;
+        if (dias === 0) return `<span class="text-emerald-600 text-xs font-bold">No prazo</span>`;
+        if (dias > 365) return `<span class="text-red-600 font-extrabold text-xs">${dias}d ⚠</span>`;
+        if (dias > 90)  return `<span class="text-orange-500 font-bold text-xs">${dias}d</span>`;
         return `<span class="text-slate-600 text-xs">${dias}d</span>`;
     }
 
@@ -847,22 +875,213 @@
             .replace(/desvio_ticket_pagador acima do padrão/g,              'Gasto acima do histórico do pagador')
             .replace(/desvio_ticket_beneficiario extremamente alto/g,        'Recebimento muito acima do histórico do beneficiário')
             .replace(/desvio_ticket_beneficiario acima do padrão/g,         'Recebimento acima do histórico do beneficiário')
-            .replace(/freq_dupla_pag_benef extremamente alto/g,              'Frequência muito anormal entre estas empresas')
-            .replace(/freq_dupla_pag_benef acima do padrão/g,               'Frequência anormal entre estas empresas')
-            .replace(/qtd_mesmo_dia_pagador extremamente alto/g,             'Emissão em lote suspeito (mesmo dia)')
+            .replace(/freq_dupla_pag_benef extremamente alto/g,              'Frequência muito anormal entre estas duas empresas')
+            .replace(/freq_dupla_pag_benef acima do padrão/g,               'Frequência anormal entre estas duas empresas')
+            .replace(/qtd_mesmo_dia_pagador extremamente alto/g,             'Emissão em lote suspeito no mesmo dia')
             .replace(/qtd_mesmo_dia_pagador acima do padrão/g,              'Muitos boletos emitidos no mesmo dia')
-            .replace(/dias_desde_ultimo_boleto_pagador extremamente baixo/g, 'Intervalo mínimo entre emissões (emissão em rajada)')
-            .replace(/dias_desde_ultimo_boleto_pagador extremamente alto/g,  'Pagador inativo por período prolongado')
-            .replace(/dias_desde_ultimo_boleto_pagador acima do padrão/g,   'Intervalo elevado entre emissões')
-            .replace(/z_score_setorial extremamente alto/g,                  'Valor muito acima do padrão do setor IBGE')
-            .replace(/z_score_setorial acima do padrão/g,                   'Valor acima do padrão do setor IBGE')
-            .replace(/z_score_uf extremamente alto/g,                        'Valor muito acima do padrão da UF')
-            .replace(/z_score_uf acima do padrão/g,                         'Valor acima do padrão da UF')
+            .replace(/dias_desde_ultimo_boleto_pagador extremamente baixo/g, 'Emissão em rajada — intervalo mínimo entre boletos')
+            .replace(/dias_desde_ultimo_boleto_pagador extremamente alto/g,  'Pagador ficou inativo por período muito longo')
+            .replace(/dias_desde_ultimo_boleto_pagador acima do padrão/g,   'Intervalo elevado entre emissões do pagador')
+            .replace(/z_score_setorial extremamente alto/g,                  'Valor muito acima da média do setor IBGE (> 3σ)')
+            .replace(/z_score_setorial acima do padrão/g,                   'Valor acima da média do setor IBGE')
+            .replace(/z_score_uf extremamente alto/g,                        'Valor muito acima da média da UF (> 3σ)')
+            .replace(/z_score_uf acima do padrão/g,                         'Valor acima da média da UF')
             .replace(/share_financeiro_benef acima do padrão/g,             'Beneficiário concentra volume financeiro anormal')
             .replace(/combinação multivariada fora do padrão/g,             'Anomalia multivariada detectada pelo Ensemble IA');
     }
 
-    // Processamento do CSV
+    // Valor de uma coluna para ordenação
+    function colVal(d, col, isZumbi) {
+        switch(col) {
+            case 'setor':   return (d.setor_oficial_ibge || '').toLowerCase();
+            case 'uf':      return (d.uf_pagador || '').toLowerCase();
+            case 'vlr':     return parseFloat(d.vlr_nominal) || 0;
+            case 'score':   return parseFloat(d.pontuacao_risco) || 0;
+            case 'dias':    return isZumbi ? (calcDiasEmissao(d) ?? -99999) : (calcDiasVencto(d) ?? -99999);
+            case 'emissao': return d.dt_emissao || '';
+            default:        return 0;
+        }
+    }
+
+    // Aplica classe de sort no th correto
+    function updateSortHeaders(tableId, col, dir) {
+        const table = document.getElementById(tableId);
+        if (!table) return;
+        table.querySelectorAll('.th-sort').forEach(th => {
+            th.classList.remove('asc','desc');
+            if (th.getAttribute('onclick') && th.getAttribute('onclick').includes(`'${col}'`))
+                th.classList.add(dir === 1 ? 'asc' : 'desc');
+        });
+    }
+
+    // ── RENDER MAIN TABLE ────────────────────────────────────────────────────
+    function renderMainRows() {
+        const isZumbi = mainTipo === 'zumbi';
+        const sorted = [...mainRows].sort((a, b) => {
+            const va = colVal(a, mainSort.col, isZumbi);
+            const vb = colVal(b, mainSort.col, isZumbi);
+            if (typeof va === 'string') return va.localeCompare(vb) * mainSort.dir;
+            return (va - vb) * mainSort.dir;
+        });
+
+        updateSortHeaders('thead-main', mainSort.col, mainSort.dir);
+
+        const tbody = document.getElementById('tbody-ameacas');
+        tbody.innerHTML = '';
+
+        if (!sorted.length) {
+            tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum registro para este filtro.</td></tr>';
+            return;
+        }
+
+        // Configs por tipo
+        const cfgs = {
+            ia:        { mot: null },
+            zumbi:     { mot: null, isZumbi: true },
+            colusao:   { mot: 'Pagador e Beneficiário do mesmo CNAE e UF operando em rede fechada (auto-faturamento suspeito)' },
+            setorial:  { mot: 'Valor nominal diverge mais de 3σ da média do setor CNAE (IBGE) — provável título fora do perfil' },
+            duplicata: { mot: 'Mesmo pagador, beneficiário, valor e data de emissão com ID de boleto diferente — risco de dupla cobrança' },
+        };
+        const cfg = cfgs[mainTipo] || cfgs.ia;
+
+        sorted.forEach(d => {
+            const tr   = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition';
+            const dias = isZumbi ? calcDiasEmissao(d) : calcDiasVencto(d);
+            const cl   = d.classificacao_sentinela || '';
+            const tag  = cl.includes('CRÍTICO') ? 'tag-critico' : cl.includes('ALTO') ? 'tag-alto' : cl.includes('MÉDIO') ? 'tag-medio' : 'tag-baixo';
+            const setor    = (d.setor_oficial_ibge || 'Não identificado');
+            const setorAbr = setor.length > 38 ? setor.substring(0,37)+'…' : setor;
+
+            let motivo;
+            if (isZumbi) {
+                const diasStr = dias !== null && dias > 0 ? `${dias} dias` : 'prazo indisponível';
+                motivo = `Título emitido há <strong>${diasStr}</strong> sem liquidação normal. Sacado com liquidez crítica (< 0,30) — permanece na carteira sem perspectiva de recebimento`;
+            } else if (cfg.mot) {
+                motivo = cfg.mot;
+            } else {
+                const raw = d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A'
+                    ? d.motivo_anomalia_ia : null;
+                motivo = traduzirMotivo(raw);
+            }
+
+            tr.innerHTML = `
+                <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorAbr}</td>
+                <td class="p-4 text-center font-bold text-sm">${d.uf_pagador || 'NI'}</td>
+                <td class="p-4 font-bold text-red-600 text-sm whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="px-2 py-1 rounded text-xs font-bold ${tag}">${cl.split('(')[0].trim()}</span></td>
+                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias, isZumbi)}</td>
+                <td class="p-4 text-xs text-slate-600 leading-relaxed">${motivo}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function sortMain(col) {
+        if (mainSort.col === col) mainSort.dir *= -1;
+        else { mainSort.col = col; mainSort.dir = col === 'vlr' || col === 'score' || col === 'dias' ? -1 : 1; }
+        renderMainRows();
+    }
+
+    // ── TAB SWITCHING ────────────────────────────────────────────────────────
+    function mudarTabela(tipo, evt) {
+        mainTipo = tipo;
+        document.querySelectorAll('.btn-tab').forEach(b => {
+            b.classList.remove('bg-emerald-600','text-white','shadow-inner');
+            b.classList.add('bg-slate-200','text-slate-600');
+        });
+        const btn = evt && evt.currentTarget ? evt.currentTarget : document.querySelectorAll('.btn-tab')[0];
+        if(btn) { btn.classList.remove('bg-slate-200','text-slate-600'); btn.classList.add('bg-emerald-600','text-white','shadow-inner'); }
+
+        const titulos = {
+            ia:        '<i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)',
+            zumbi:     '<i class="fa-solid fa-skull text-emerald-500 mr-2"></i>Boletos Zumbis Isolados',
+            colusao:   '<i class="fa-solid fa-network-wired text-emerald-500 mr-2"></i>Tentativas de Colusão / Auto-Faturamento',
+            setorial:  '<i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>Distorção Estatística de Z-Score Setorial',
+            duplicata: '<i class="fa-solid fa-copy text-emerald-500 mr-2"></i>Duplicatas Transacionais',
+        };
+        document.getElementById('titulo-tabela').innerHTML = titulos[tipo] || titulos.ia;
+
+        // Atualiza label da coluna de dias conforme aba
+        const diasLabel = document.getElementById('th-dias-label');
+        if (diasLabel) {
+            diasLabel.innerHTML = tipo === 'zumbi'
+                ? 'Dias desde Emissão<span class="sort-icon"></span>'
+                : 'Dias Atraso<span class="sort-icon"></span>';
+        }
+
+        const filtros = {
+            ia:        d => d.flag_fraude_ia == 1,
+            zumbi:     d => d.flag_boleto_zumbi == 1,
+            colusao:   d => d.flag_colusao == 1,
+            setorial:  d => d.flag_anomalia_setorial == 1,
+            duplicata: d => d.flag_duplicata_transacional == 1,
+        };
+        mainRows = baseCriticos.filter(filtros[tipo] || filtros.ia);
+        mainSort = { col: 'vlr', dir: -1 };   // reseta para valor desc ao trocar aba
+        renderMainRows();
+    }
+
+    // ── BAIXO RISCO MODAL ────────────────────────────────────────────────────
+    function renderBRRows() {
+        const sorted = [...brRows].sort((a, b) => {
+            const va = colVal(a, brSort.col, false);
+            const vb = colVal(b, brSort.col, false);
+            if (typeof va === 'string') return va.localeCompare(vb) * brSort.dir;
+            return (va - vb) * brSort.dir;
+        });
+        updateSortHeaders('thead-br', brSort.col, brSort.dir);
+
+        const tbody = document.getElementById('tbody-baixo-risco');
+        tbody.innerHTML = '';
+        sorted.forEach(d => {
+            const dias   = calcDiasVencto(d);
+            const setor  = d.setor_oficial_ibge || 'Não identificado';
+            const setorA = setor.length > 42 ? setor.substring(0,40)+'…' : setor;
+            const emissao = d.dt_emissao ? new Date(d.dt_emissao).toLocaleDateString('pt-BR') : '—';
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-emerald-50 transition';
+            tr.innerHTML = `
+                <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorA}</td>
+                <td class="p-4 text-center font-bold">${d.uf_pagador||'NI'}</td>
+                <td class="p-4 font-bold text-emerald-700 whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+                <td class="p-4 text-center whitespace-nowrap"><span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
+                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias, false)}</td>
+                <td class="p-4 text-center text-xs text-slate-500 whitespace-nowrap">${emissao}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function sortBR(col) {
+        if (brSort.col === col) brSort.dir *= -1;
+        else { brSort.col = col; brSort.dir = col === 'vlr' || col === 'score' || col === 'dias' ? -1 : 1; }
+        renderBRRows();
+    }
+
+    function mostrarTopBaixoRisco() {
+        brRows = todosValidos.filter(d =>
+            d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
+            d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
+        );
+        brSort = { col: 'vlr', dir: -1 };
+
+        // Adiciona id ao thead do modal para updateSortHeaders funcionar
+        const thead = document.querySelector('#modalBaixoRisco thead');
+        if (thead && !thead.id) thead.id = 'thead-br';
+
+        renderBRRows();
+        const m = document.getElementById('modalBaixoRisco');
+        m.classList.remove('hidden'); m.classList.add('flex');
+    }
+
+    function fecharModalBR() {
+        const m = document.getElementById('modalBaixoRisco');
+        m.classList.add('hidden'); m.classList.remove('flex');
+    }
+
+    // ── PROCESSAMENTO DO CSV ─────────────────────────────────────────────────
     function processarDados(data) {
         const validos = data.filter(d => d.id_boleto && d.classificacao_sentinela);
         todosValidos = validos;
@@ -873,36 +1092,29 @@
         document.getElementById('kpi-malha').innerText   = baseCriticos.length.toLocaleString('pt-BR');
         document.getElementById('kpi-capital').innerText = 'R$ ' + (totalCapital / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Mi';
 
-        // ── Baixo Risco (recomendações) ──────────────────────────────────────
+        // ── Baixo Risco — métricas dinâmicas ─────────────────────────────────
         const baixoRisco = validos.filter(d =>
             d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
             d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
         );
-        const nBaixo      = baixoRisco.length;
-        const vlrBaixo    = baixoRisco.reduce((s,d) => s + (parseFloat(d.vlr_nominal)||0), 0);
-        const ticketMedio = nBaixo > 0 ? vlrBaixo / nBaixo : 0;
-        const pctSegura   = (nBaixo / validos.length * 100).toFixed(1);
+        const nBaixo   = baixoRisco.length;
+        const vlrBaixo = baixoRisco.reduce((s,d) => s + (parseFloat(d.vlr_nominal)||0), 0);
+        const ticket   = nBaixo ? vlrBaixo / nBaixo : 0;
+        const pctSeg   = (nBaixo / validos.length * 100).toFixed(1);
+        const atrasosBR = baixoRisco.map(d => calcDiasVencto(d)).filter(v => v !== null && v >= 0).sort((a,b)=>a-b);
+        const medAtr   = atrasosBR.length ? atrasosBR[Math.floor(atrasosBR.length/2)] : 0;
+        const ufBR = {};
+        baixoRisco.forEach(d => { const u = d.uf_pagador||'NI'; ufBR[u]=(ufBR[u]||0)+1; });
+        const top3UF = Object.entries(ufBR).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' • ');
 
-        // Atraso mediano dos boletos de baixo risco
-        const atrasosBaixo = baixoRisco.map(d => calcDias(d)).filter(v => v !== null && v >= 0);
-        const atrasosBaixoSorted = [...atrasosBaixo].sort((a,b)=>a-b);
-        const medAtraso = atrasosBaixoSorted.length
-            ? atrasosBaixoSorted[Math.floor(atrasosBaixoSorted.length/2)]
-            : 0;
-
-        // Top 3 UFs dos boletos de baixo risco
-        const ufBaixo = {};
-        baixoRisco.forEach(d => { const u = d.uf_pagador||'NI'; ufBaixo[u] = (ufBaixo[u]||0)+1; });
-        const top3UF = Object.entries(ufBaixo).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' • ');
-
-        document.getElementById('rec-pct-badge').textContent = pctSegura + '% da carteira segura';
+        document.getElementById('rec-pct-badge').textContent = pctSeg + '% da carteira segura';
         document.getElementById('rec-count').textContent     = nBaixo.toLocaleString('pt-BR');
         document.getElementById('rec-volume').textContent    = 'R$ ' + (vlrBaixo/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' Mi em volume';
-        document.getElementById('rec-ticket').textContent    = 'R$ ' + ticketMedio.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
-        document.getElementById('rec-atraso').textContent    = 'Atraso mediano: ' + medAtraso + ' dias';
+        document.getElementById('rec-ticket').textContent    = 'R$ ' + ticket.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
+        document.getElementById('rec-atraso').textContent    = 'Atraso mediano: ' + medAtr + ' dias';
         document.getElementById('rec-ufs').textContent       = top3UF || '—';
 
-        // Anatomia
+        // ── Anatomia ──────────────────────────────────────────────────────────
         const anatomia = {
             'Emissão em Lote': 0, 'Duplicata Transacional': 0, 'Histórico Atraso': 0,
             'Repetição Valor': 0, 'Concentração Benef.': 0, 'Toxicidade Dupla': 0,
@@ -928,7 +1140,6 @@
         chartAnatomia.data.datasets[0].data = anatSort.map(x => x[1]);
         chartAnatomia.update();
 
-        // Geografia top 5
         const geo = {};
         baseCriticos.forEach(d => { let uf = d.uf_pagador || 'NI'; geo[uf] = (geo[uf]||0)+1; });
         const geoSort = Object.entries(geo).sort((a,b)=>b[1]-a[1]).slice(0,5);
@@ -936,13 +1147,11 @@
         chartGeo.data.datasets[0].data = geoSort.map(x=>x[1]);
         chartGeo.update();
 
-        // Clusters
         const cc = {'1 - Baixo':0,'2 - Médio':0,'3 - Alto':0,'4 - Muito Alto':0};
         baseCriticos.forEach(d => { if(cc[d.cluster_valor_nominal]!==undefined) cc[d.cluster_valor_nominal]++; });
         chartCluster.data.datasets[0].data = [cc['1 - Baixo'],cc['2 - Médio'],cc['3 - Alto'],cc['4 - Muito Alto']];
         chartCluster.update();
 
-        // Scatter
         const dIA = [], dOut = [];
         baseCriticos.forEach(d => {
             const pt = { x: parseFloat(d.pontuacao_risco)||0, y: parseFloat(d.vlr_nominal)||0 };
@@ -955,117 +1164,7 @@
         mudarTabela('ia', null);
     }
 
-    // Tabela dinâmica
-    function mudarTabela(tipo, evt) {
-        document.querySelectorAll('.btn-tab').forEach(b => {
-            b.classList.remove('bg-emerald-600','text-white','shadow-inner');
-            b.classList.add('bg-slate-200','text-slate-600');
-        });
-        if(evt && evt.currentTarget) {
-            evt.currentTarget.classList.remove('bg-slate-200','text-slate-600');
-            evt.currentTarget.classList.add('bg-emerald-600','text-white','shadow-inner');
-        } else {
-            document.querySelectorAll('.btn-tab')[0].classList.remove('bg-slate-200','text-slate-600');
-            document.querySelectorAll('.btn-tab')[0].classList.add('bg-emerald-600','text-white','shadow-inner');
-        }
-
-        const configs = {
-            ia:        { flag: d => d.flag_fraude_ia == 1,               titulo: '<i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)', motivo: null },
-            zumbi:     { flag: d => d.flag_boleto_zumbi == 1,            titulo: '<i class="fa-solid fa-skull text-emerald-500 mr-2"></i>Boletos Zumbis Isolados', motivo: null, isZumbi: true },
-            colusao:   { flag: d => d.flag_colusao == 1,                 titulo: '<i class="fa-solid fa-network-wired text-emerald-500 mr-2"></i>Tentativas de Colusão / Auto-Faturamento', motivo: 'Pagador e Recebedor do mesmo CNAE e UF operando em rede fechada (auto-faturamento)' },
-            setorial:  { flag: d => d.flag_anomalia_setorial == 1,       titulo: '<i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>Distorção Estatística de Z-Score Setorial', motivo: 'Valor nominal diverge mais de 3σ da média do setor CNAE (IBGE) — provável título fora do perfil' },
-            duplicata: { flag: d => d.flag_duplicata_transacional == 1,  titulo: '<i class="fa-solid fa-copy text-emerald-500 mr-2"></i>Duplicatas Transacionais', motivo: 'Mesmo pagador, beneficiário, valor e data de emissão com ID diferente — risco de dupla cobrança' }
-        };
-        const cfg = configs[tipo] || configs.ia;
-        document.getElementById('titulo-tabela').innerHTML = cfg.titulo;
-
-        const filtrados = baseCriticos.filter(cfg.flag);
-        const top5 = filtrados.sort((a,b) => (parseFloat(b.vlr_nominal)||0)-(parseFloat(a.vlr_nominal)||0)).slice(0,5);
-        const tbody = document.getElementById('tbody-ameacas');
-        tbody.innerHTML = '';
-
-        if(top5.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400 text-sm">Nenhum registro encontrado para este filtro.</td></tr>';
-            return;
-        }
-
-        top5.forEach(d => {
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-slate-50 transition';
-
-            const dias = calcDias(d);
-
-            // Motivo: para zumbi mostra dias reais; para IA traduz; para outros usa fixo
-            let motivo;
-            if (cfg.isZumbi) {
-                const diasStr = dias !== null && dias > 0 ? `${dias} dias` : 'prazo não identificado';
-                motivo = `Boleto em atraso há <strong>${diasStr}</strong> com sacado sem liquidez (índice < 0,30) — título "morto" na carteira`;
-            } else if (cfg.motivo) {
-                motivo = cfg.motivo;
-            } else {
-                const rawMotivo = d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A'
-                    ? d.motivo_anomalia_ia : null;
-                motivo = traduzirMotivo(rawMotivo);
-            }
-
-            const cl       = d.classificacao_sentinela || '';
-            const tagClass  = cl.includes('CRÍTICO') ? 'tag-critico' : cl.includes('ALTO') ? 'tag-alto' : cl.includes('MÉDIO') ? 'tag-medio' : 'tag-baixo';
-            const setorTxt  = (d.setor_oficial_ibge || 'Setor não identificado');
-            const setorAbr  = setorTxt.length > 38 ? setorTxt.substring(0,36)+'…' : setorTxt;
-
-            tr.innerHTML = `
-                <td class="p-4 text-xs text-slate-700 font-medium" title="${setorTxt}">${setorAbr}</td>
-                <td class="p-4 text-center font-bold text-sm">${d.uf_pagador || 'NI'}</td>
-                <td class="p-4 font-bold text-red-600 text-sm whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                <td class="p-4 text-center whitespace-nowrap"><span class="bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold whitespace-nowrap">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
-                <td class="p-4 text-center whitespace-nowrap"><span class="px-2 py-1 rounded text-xs font-bold ${tagClass}">${cl.split('(')[0].trim()}</span></td>
-                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias)}</td>
-                <td class="p-4 text-xs text-slate-600">${motivo}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    // Modal baixo risco
-    function mostrarTopBaixoRisco() {
-        const baixoRisco = todosValidos
-            .filter(d =>
-                d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
-                d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
-            )
-            .sort((a,b) => (parseFloat(b.vlr_nominal)||0) - (parseFloat(a.vlr_nominal)||0))
-            .slice(0, 10);
-
-        const tbody = document.getElementById('tbody-baixo-risco');
-        tbody.innerHTML = '';
-        baixoRisco.forEach((d, i) => {
-            const dias   = calcDias(d);
-            const setor  = (d.setor_oficial_ibge || 'Não identificado');
-            const setorA = setor.length > 42 ? setor.substring(0,40)+'…' : setor;
-            const emissao = d.dt_emissao ? new Date(d.dt_emissao).toLocaleDateString('pt-BR') : '—';
-            const tr = document.createElement('tr');
-            tr.className = 'hover:bg-emerald-50 transition';
-            tr.innerHTML = `
-                <td class="p-4 text-slate-400 font-bold text-sm">${i+1}</td>
-                <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorA}</td>
-                <td class="p-4 text-center font-bold">${d.uf_pagador||'NI'}</td>
-                <td class="p-4 font-bold text-emerald-700 whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                <td class="p-4 text-center whitespace-nowrap"><span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold whitespace-nowrap">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
-                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias)}</td>
-                <td class="p-4 text-center text-xs text-slate-500">${emissao}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        const modal = document.getElementById('modalBaixoRisco');
-        modal.classList.remove('hidden'); modal.classList.add('flex');
-    }
-
-    document.getElementById('btnFecharBaixoRisco').onclick       = () => { const m = document.getElementById('modalBaixoRisco'); m.classList.add('hidden'); m.classList.remove('flex'); };
-    document.getElementById('btnFecharBaixoRiscoBottom').onclick  = () => { const m = document.getElementById('modalBaixoRisco'); m.classList.add('hidden'); m.classList.remove('flex'); };
-    window.addEventListener('click', e => { const m = document.getElementById('modalBaixoRisco'); if(e.target === m){ m.classList.add('hidden'); m.classList.remove('flex'); } });
-
-    // Modais
+    // ── MODAIS ───────────────────────────────────────────────────────────────
     const modalPython = document.getElementById('modalPython');
     const modalEDA    = document.getElementById('modalEDA');
     let edaChartsBuilt = false;
@@ -1082,16 +1181,17 @@
     document.getElementById('btnFecharEDABottom').onclick = () => { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); };
 
     window.addEventListener('click', e => {
-        if(e.target === modalPython) { modalPython.classList.add('hidden'); modalPython.classList.remove('flex'); }
-        if(e.target === modalEDA)    { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); }
+        if(e.target === modalPython)  { modalPython.classList.add('hidden'); modalPython.classList.remove('flex'); }
+        if(e.target === modalEDA)     { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); }
+        if(e.target === document.getElementById('modalBaixoRisco')) fecharModalBR();
     });
 
-    // Loading progress bar
+    // ── LOADING ───────────────────────────────────────────────────────────────
     let prog = 0;
     const barEl = document.getElementById('loadingBar');
     const barInterval = setInterval(() => { prog = Math.min(prog + 8, 90); barEl.style.width = prog + '%'; }, 100);
 
-    // INIT — fetch CSV 
+    // INIT — fetch CSV
     setTimeout(() => {
         Papa.parse('Sentinela_MVP_Final.csv', {
             download: true, header: true, dynamicTyping: true, skipEmptyLines: true,
