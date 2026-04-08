@@ -38,18 +38,23 @@
         .tag-medio   { background: #e0f2fe; color: #0284c7; }
         .tag-baixo   { background: #dcfce7; color: #16a34a; }
 
+        /* Colunas ordenáveis */
+        .th-sort { cursor: pointer; user-select: none; white-space: nowrap; transition: background .15s; }
+        .th-sort:hover { color: #1e293b; background: #f8fafc; }
+        .th-sort .si { display:inline-block; margin-left:3px; opacity:.35; font-size:9px; }
+        .th-sort.asc  .si::after { content:'▲'; opacity:1; }
+        .th-sort.desc .si::after { content:'▼'; opacity:1; }
+        .th-sort:not(.asc):not(.desc) .si::after { content:'⇅'; }
+
+        /* Linhas extras ocultas */
+        .row-extra { display: none; }
+        .row-extra.show { display: table-row; animation: fadeRow .2s ease; }
+        @keyframes fadeRow { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+
         .selic-badge { background: linear-gradient(135deg, #7c3aed, #6d28d9); }
 
         /* Scroll suave no modal EDA */
         #modalEDA .overflow-y-auto { scroll-behavior: smooth; }
-
-        /* Colunas ordenáveis */
-        .th-sort { cursor: pointer; user-select: none; white-space: nowrap; }
-        .th-sort:hover { color: #1e293b; background: #f8fafc; }
-        .th-sort .sort-icon { display: inline-block; margin-left: 4px; opacity: 0.35; font-size: 9px; }
-        .th-sort.asc  .sort-icon::after { content: '▲'; opacity: 1; }
-        .th-sort.desc .sort-icon::after { content: '▼'; opacity: 1; }
-        .th-sort:not(.asc):not(.desc) .sort-icon::after { content: '⇅'; }
 
         .nav-pill {
             cursor: pointer;
@@ -240,7 +245,7 @@
         <div>
             <div class="flex flex-wrap gap-2 mb-0">
                 <button onclick="mudarTabela('ia', event)" class="btn-tab bg-emerald-600 text-white px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide shadow-inner flex items-center gap-1">
-                    <i class="fa-solid fa-microchip"></i> IA Explicável (Top 5)
+                    <i class="fa-solid fa-microchip"></i> IA Explicável
                 </button>
                 <button onclick="mudarTabela('zumbi', event)" class="btn-tab bg-slate-200 hover:bg-slate-300 text-slate-600 px-4 py-2 rounded-t-lg font-bold text-xs uppercase tracking-wide flex items-center gap-1">
                     <i class="fa-solid fa-skull"></i> Boletos Zumbis
@@ -257,27 +262,39 @@
             </div>
 
             <div class="bg-white rounded-b-xl rounded-tr-xl shadow-sm overflow-hidden border border-slate-200">
-                <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <div class="p-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center gap-3 flex-wrap">
                     <h2 id="titulo-tabela" class="text-sm font-bold text-slate-800 uppercase tracking-wide">
                         <i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)
                     </h2>
-                    <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Auditoria Ativa</span>
+                    <div class="flex items-center gap-3">
+                        <span id="tbl-count-badge" class="text-xs text-slate-400 font-medium"></span>
+                        <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1 rounded-full animate-pulse">Auditoria Ativa</span>
+                    </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead id="thead-main">
                             <tr class="bg-white text-slate-400 text-[10px] uppercase tracking-widest border-b">
-                                <th class="p-4 font-semibold th-sort" onclick="sortMain('setor')">Setor IBGE<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('uf')">UF<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort" onclick="sortMain('vlr')">Valor Nominal<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('score')">Score<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortMain('setor')">Setor IBGE<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('uf')">UF<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortMain('vlr')">Valor Nominal<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortMain('score')">Score<span class="si"></span></th>
                                 <th class="p-4 font-semibold text-center">Classificação</th>
-                                <th class="p-4 font-semibold th-sort text-center" id="th-dias-label" onclick="sortMain('dias')">Dias Atraso<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" id="th-dias-lbl" onclick="sortMain('dias')">Dias Atraso<span class="si"></span></th>
                                 <th class="p-4 font-semibold">Justificativa</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-ameacas" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
                     </table>
+                </div>
+                <!-- Expand footer -->
+                <div id="tbl-expand-footer" class="hidden border-t border-slate-100 py-3 px-4 flex items-center justify-between bg-slate-50">
+                    <span id="tbl-expand-info" class="text-xs text-slate-400"></span>
+                    <button onclick="toggleExpand()" id="btn-expand"
+                        class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-lg transition">
+                        <i id="btn-expand-icon" class="fa-solid fa-chevron-down"></i>
+                        <span id="btn-expand-txt">Ver mais</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -334,18 +351,27 @@
                 </div>
                 <div class="overflow-auto">
                     <table class="w-full text-left border-collapse">
-                        <thead class="sticky top-0 z-10">
+                        <thead id="thead-br" class="sticky top-0 z-10">
                             <tr class="bg-slate-50 text-slate-400 text-[10px] uppercase tracking-widest border-b">
-                                <th class="p-4 font-semibold th-sort" onclick="sortBR('setor')">Setor IBGE<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('uf')">UF<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort" onclick="sortBR('vlr')">Valor Nominal<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('score')">Score<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('dias')">Dias Atraso<span class="sort-icon"></span></th>
-                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('emissao')">Emissão<span class="sort-icon"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortBR('setor')">Setor IBGE<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('uf')">UF<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort" onclick="sortBR('vlr')">Valor Nominal<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('score')">Score<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('dias')">Dias Atraso<span class="si"></span></th>
+                                <th class="p-4 font-semibold th-sort text-center" onclick="sortBR('emissao')">Emissão<span class="si"></span></th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-baixo-risco" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
+                        <tbody id="tbody-br" class="text-sm text-slate-700 divide-y divide-slate-100"></tbody>
                     </table>
+                </div>
+                <!-- Expand footer modal -->
+                <div id="br-expand-footer" class="hidden border-t border-slate-100 py-3 px-4 flex items-center justify-between bg-slate-50">
+                    <span id="br-expand-info" class="text-xs text-slate-400"></span>
+                    <button onclick="toggleExpandBR()" id="btn-expand-br"
+                        class="flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-4 py-2 rounded-lg transition">
+                        <i id="btn-expand-br-icon" class="fa-solid fa-chevron-down"></i>
+                        <span id="btn-expand-br-txt">Ver mais</span>
+                    </button>
                 </div>
                 <div class="p-4 bg-slate-50 border-t flex justify-end">
                     <button onclick="fecharModalBR()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2 px-6 rounded-lg transition text-sm">Fechar</button>
@@ -821,53 +847,36 @@
     });
 
     // ── GLOBALS ──────────────────────────────────────────────────────────────
-    let baseCriticos = [];
-    let todosValidos = [];
-
-    // Sort state: main table e modal baixo risco
-    let mainRows  = [];   // todos os rows do filtro atual (sem limite)
-    let mainSort  = { col: 'vlr', dir: -1 };
-    let mainTipo  = 'ia';
-    let brRows    = [];   // baixo risco modal
-    let brSort    = { col: 'vlr', dir: -1 };
+    let baseCriticos = [], todosValidos = [];
+    let mainRows = [], mainSort = { col:'vlr', dir:-1 }, mainTipo = 'ia', mainExpanded = false;
+    let brRows   = [], brSort   = { col:'vlr', dir:-1 }, brExpanded = false;
+    const PAGE = 10; // linhas visíveis por padrão
 
     // ── HELPERS ──────────────────────────────────────────────────────────────
-
-    // Dias de atraso: dt_pagamento − dt_vencimento  (positivo = atrasado)
-    function calcDiasVencto(d) {
+    function diasVencto(d) {
         if (!d.dt_pagamento || !d.dt_vencimento) return null;
         const a = new Date(d.dt_pagamento), b = new Date(d.dt_vencimento);
-        if (isNaN(a) || isNaN(b)) return null;
-        return Math.round((a - b) / 864e5);
+        return isNaN(a)||isNaN(b) ? null : Math.round((a-b)/864e5);
     }
-
-    // Dias desde emissão: dt_pagamento − dt_emissao  (usado nos Zumbis)
-    function calcDiasEmissao(d) {
+    function diasEmissao(d) {
         if (!d.dt_pagamento || !d.dt_emissao) return null;
         const a = new Date(d.dt_pagamento), b = new Date(d.dt_emissao);
-        if (isNaN(a) || isNaN(b)) return null;
-        return Math.round((a - b) / 864e5);
+        return isNaN(a)||isNaN(b) ? null : Math.round((a-b)/864e5);
     }
-
-    // Renderiza badge de dias com cor contextual
-    function formatDias(dias, isZumbi) {
+    function fmtDias(dias, isZumbi) {
         if (dias === null) return '<span class="text-slate-300 text-xs">—</span>';
         if (isZumbi) {
-            // Para zumbi sempre > 0 e normalmente grande
-            const cor = dias > 365 ? 'text-red-600 font-extrabold' : dias > 180 ? 'text-orange-500 font-bold' : 'text-amber-600 font-bold';
+            const cor = dias>365?'text-red-600 font-extrabold':dias>180?'text-orange-500 font-bold':'text-amber-500 font-bold';
             return `<span class="${cor} text-xs">${dias}d</span>`;
         }
-        if (dias < 0)   return `<span class="text-emerald-500 text-xs font-medium">${Math.abs(dias)}d antecip.</span>`;
-        if (dias === 0) return `<span class="text-emerald-600 text-xs font-bold">No prazo</span>`;
-        if (dias > 365) return `<span class="text-red-600 font-extrabold text-xs">${dias}d ⚠</span>`;
-        if (dias > 90)  return `<span class="text-orange-500 font-bold text-xs">${dias}d</span>`;
+        if (dias<0)   return `<span class="text-emerald-500 text-xs font-medium">${Math.abs(dias)}d antecip.</span>`;
+        if (dias===0) return `<span class="text-emerald-600 text-xs font-bold">No prazo</span>`;
+        if (dias>365) return `<span class="text-red-600 font-extrabold text-xs">${dias}d ⚠</span>`;
+        if (dias>90)  return `<span class="text-orange-500 font-bold text-xs">${dias}d</span>`;
         return `<span class="text-slate-600 text-xs">${dias}d</span>`;
     }
-
-    // Traduz nomes técnicos de features para linguagem de negócio
-    function traduzirMotivo(raw) {
-        if (!raw || raw === 'não aplicável' || raw === 'N/A')
-            return 'Anomalia multivariada detectada pelo Ensemble IA';
+    function traduzir(raw) {
+        if (!raw || raw==='não aplicável' || raw==='N/A') return 'Anomalia multivariada detectada pelo Ensemble IA';
         return raw
             .replace(/vlr_nominal extremamente alto/g,                      'Valor muito acima do P99 da carteira')
             .replace(/vlr_nominal acima do padrão/g,                        'Valor acima do padrão da carteira')
@@ -880,7 +889,7 @@
             .replace(/qtd_mesmo_dia_pagador extremamente alto/g,             'Emissão em lote suspeito no mesmo dia')
             .replace(/qtd_mesmo_dia_pagador acima do padrão/g,              'Muitos boletos emitidos no mesmo dia')
             .replace(/dias_desde_ultimo_boleto_pagador extremamente baixo/g, 'Emissão em rajada — intervalo mínimo entre boletos')
-            .replace(/dias_desde_ultimo_boleto_pagador extremamente alto/g,  'Pagador ficou inativo por período muito longo')
+            .replace(/dias_desde_ultimo_boleto_pagador extremamente alto/g,  'Pagador inativo por período muito longo')
             .replace(/dias_desde_ultimo_boleto_pagador acima do padrão/g,   'Intervalo elevado entre emissões do pagador')
             .replace(/z_score_setorial extremamente alto/g,                  'Valor muito acima da média do setor IBGE (> 3σ)')
             .replace(/z_score_setorial acima do padrão/g,                   'Valor acima da média do setor IBGE')
@@ -889,110 +898,132 @@
             .replace(/share_financeiro_benef acima do padrão/g,             'Beneficiário concentra volume financeiro anormal')
             .replace(/combinação multivariada fora do padrão/g,             'Anomalia multivariada detectada pelo Ensemble IA');
     }
-
-    // Valor de uma coluna para ordenação
     function colVal(d, col, isZumbi) {
         switch(col) {
-            case 'setor':   return (d.setor_oficial_ibge || '').toLowerCase();
-            case 'uf':      return (d.uf_pagador || '').toLowerCase();
-            case 'vlr':     return parseFloat(d.vlr_nominal) || 0;
-            case 'score':   return parseFloat(d.pontuacao_risco) || 0;
-            case 'dias':    return isZumbi ? (calcDiasEmissao(d) ?? -99999) : (calcDiasVencto(d) ?? -99999);
-            case 'emissao': return d.dt_emissao || '';
+            case 'setor':   return (d.setor_oficial_ibge||'').toLowerCase();
+            case 'uf':      return (d.uf_pagador||'').toLowerCase();
+            case 'vlr':     return parseFloat(d.vlr_nominal)||0;
+            case 'score':   return parseFloat(d.pontuacao_risco)||0;
+            case 'dias':    return isZumbi ? (diasEmissao(d)??-9e9) : (diasVencto(d)??-9e9);
+            case 'emissao': return d.dt_emissao||'';
             default:        return 0;
         }
     }
-
-    // Aplica classe de sort no th correto
-    function updateSortHeaders(tableId, col, dir) {
-        const table = document.getElementById(tableId);
-        if (!table) return;
-        table.querySelectorAll('.th-sort').forEach(th => {
+    function updateSortTh(theadId, col, dir) {
+        const thead = document.getElementById(theadId);
+        if (!thead) return;
+        thead.querySelectorAll('.th-sort').forEach(th => {
             th.classList.remove('asc','desc');
-            if (th.getAttribute('onclick') && th.getAttribute('onclick').includes(`'${col}'`))
-                th.classList.add(dir === 1 ? 'asc' : 'desc');
+            if (th.getAttribute('onclick')?.includes(`'${col}'`))
+                th.classList.add(dir===1?'asc':'desc');
         });
     }
+    function buildRow(d, isZumbi, motivo, colorClass) {
+        const dias   = isZumbi ? diasEmissao(d) : diasVencto(d);
+        const cl     = d.classificacao_sentinela||'';
+        const tag    = cl.includes('CRÍTICO')?'tag-critico':cl.includes('ALTO')?'tag-alto':cl.includes('MÉDIO')?'tag-medio':'tag-baixo';
+        const setor  = d.setor_oficial_ibge||'Não identificado';
+        const setorA = setor.length>40 ? setor.substring(0,39)+'…' : setor;
+        const tr = document.createElement('tr');
+        tr.className = `hover:bg-slate-50 transition`;
+        tr.innerHTML = `
+            <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorA}</td>
+            <td class="p-4 text-center font-bold text-sm">${d.uf_pagador||'NI'}</td>
+            <td class="p-4 font-bold ${colorClass||'text-red-600'} text-sm whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+            <td class="p-4 text-center whitespace-nowrap"><span class="${colorClass==='text-emerald-700'?'bg-emerald-600':'bg-red-600'} text-white px-2 py-1 rounded-md text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
+            <td class="p-4 text-center whitespace-nowrap"><span class="px-2 py-1 rounded text-xs font-bold ${tag}">${cl.split('(')[0].trim()}</span></td>
+            <td class="p-4 text-center whitespace-nowrap">${fmtDias(dias, isZumbi)}</td>
+            <td class="p-4 text-xs text-slate-600 leading-relaxed">${motivo}</td>`;
+        return tr;
+    }
 
-    // ── RENDER MAIN TABLE ────────────────────────────────────────────────────
-    function renderMainRows() {
+    // ── MAIN TABLE RENDER ────────────────────────────────────────────────────
+    function renderMain() {
         const isZumbi = mainTipo === 'zumbi';
-        const sorted = [...mainRows].sort((a, b) => {
+        const sorted = [...mainRows].sort((a,b) => {
             const va = colVal(a, mainSort.col, isZumbi);
             const vb = colVal(b, mainSort.col, isZumbi);
-            if (typeof va === 'string') return va.localeCompare(vb) * mainSort.dir;
-            return (va - vb) * mainSort.dir;
+            return typeof va==='string' ? va.localeCompare(vb)*mainSort.dir : (va-vb)*mainSort.dir;
         });
-
-        updateSortHeaders('thead-main', mainSort.col, mainSort.dir);
+        updateSortTh('thead-main', mainSort.col, mainSort.dir);
 
         const tbody = document.getElementById('tbody-ameacas');
         tbody.innerHTML = '';
 
+        // Badge de contagem
+        const badge = document.getElementById('tbl-count-badge');
+        badge.textContent = sorted.length ? `${sorted.length} registro${sorted.length>1?'s':''}` : '';
+
         if (!sorted.length) {
             tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum registro para este filtro.</td></tr>';
+            document.getElementById('tbl-expand-footer').classList.add('hidden');
             return;
         }
 
-        // Configs por tipo
-        const cfgs = {
-            ia:        { mot: null },
-            zumbi:     { mot: null, isZumbi: true },
-            colusao:   { mot: 'Pagador e Beneficiário do mesmo CNAE e UF operando em rede fechada (auto-faturamento suspeito)' },
-            setorial:  { mot: 'Valor nominal diverge mais de 3σ da média do setor CNAE (IBGE) — provável título fora do perfil' },
-            duplicata: { mot: 'Mesmo pagador, beneficiário, valor e data de emissão com ID de boleto diferente — risco de dupla cobrança' },
+        // Motivos por tipo
+        const motFix = {
+            colusao:   'Pagador e Beneficiário do mesmo CNAE e UF operando em rede fechada (auto-faturamento suspeito)',
+            setorial:  'Valor nominal diverge mais de 3σ da média do setor CNAE (IBGE) — provável título fora do perfil',
+            duplicata: 'Mesmo pagador, beneficiário, valor e data de emissão com ID diferente — risco de dupla cobrança',
         };
-        const cfg = cfgs[mainTipo] || cfgs.ia;
 
-        sorted.forEach(d => {
-            const tr   = document.createElement('tr');
-            tr.className = 'hover:bg-slate-50 transition';
-            const dias = isZumbi ? calcDiasEmissao(d) : calcDiasVencto(d);
-            const cl   = d.classificacao_sentinela || '';
-            const tag  = cl.includes('CRÍTICO') ? 'tag-critico' : cl.includes('ALTO') ? 'tag-alto' : cl.includes('MÉDIO') ? 'tag-medio' : 'tag-baixo';
-            const setor    = (d.setor_oficial_ibge || 'Não identificado');
-            const setorAbr = setor.length > 38 ? setor.substring(0,37)+'…' : setor;
-
+        sorted.forEach((d, i) => {
             let motivo;
             if (isZumbi) {
-                const diasStr = dias !== null && dias > 0 ? `${dias} dias` : 'prazo indisponível';
+                const diasStr = (diasEmissao(d)??0) > 0 ? `${diasEmissao(d)} dias` : 'prazo indisponível';
                 motivo = `Título emitido há <strong>${diasStr}</strong> sem liquidação normal. Sacado com liquidez crítica (< 0,30) — permanece na carteira sem perspectiva de recebimento`;
-            } else if (cfg.mot) {
-                motivo = cfg.mot;
+            } else if (motFix[mainTipo]) {
+                motivo = motFix[mainTipo];
             } else {
-                const raw = d.motivo_anomalia_ia && d.motivo_anomalia_ia !== 'não aplicável' && d.motivo_anomalia_ia !== 'N/A'
-                    ? d.motivo_anomalia_ia : null;
-                motivo = traduzirMotivo(raw);
+                const raw = d.motivo_anomalia_ia && d.motivo_anomalia_ia!=='não aplicável' && d.motivo_anomalia_ia!=='N/A' ? d.motivo_anomalia_ia : null;
+                motivo = traduzir(raw);
             }
-
-            tr.innerHTML = `
-                <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorAbr}</td>
-                <td class="p-4 text-center font-bold text-sm">${d.uf_pagador || 'NI'}</td>
-                <td class="p-4 font-bold text-red-600 text-sm whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
-                <td class="p-4 text-center whitespace-nowrap"><span class="bg-red-600 text-white px-2 py-1 rounded-md text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
-                <td class="p-4 text-center whitespace-nowrap"><span class="px-2 py-1 rounded text-xs font-bold ${tag}">${cl.split('(')[0].trim()}</span></td>
-                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias, isZumbi)}</td>
-                <td class="p-4 text-xs text-slate-600 leading-relaxed">${motivo}</td>
-            `;
+            const tr = buildRow(d, isZumbi, motivo, null);
+            if (i >= PAGE) { tr.classList.add('row-extra'); if (mainExpanded) tr.classList.add('show'); }
             tbody.appendChild(tr);
         });
+
+        // Expand footer
+        const footer = document.getElementById('tbl-expand-footer');
+        const extra  = sorted.length - PAGE;
+        if (extra > 0) {
+            footer.classList.remove('hidden');
+            document.getElementById('tbl-expand-info').textContent = mainExpanded
+                ? `Exibindo todos os ${sorted.length} registros`
+                : `Exibindo 10 de ${sorted.length} registros`;
+            document.getElementById('btn-expand-txt').textContent  = mainExpanded ? 'Recolher' : `Ver mais ${extra} registro${extra>1?'s':''}`;
+            document.getElementById('btn-expand-icon').className   = mainExpanded ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+        } else {
+            footer.classList.add('hidden');
+        }
+    }
+
+    function toggleExpand() {
+        mainExpanded = !mainExpanded;
+        document.querySelectorAll('#tbody-ameacas .row-extra').forEach(tr => {
+            if (mainExpanded) tr.classList.add('show'); else tr.classList.remove('show');
+        });
+        const extra = mainRows.length - PAGE;
+        document.getElementById('tbl-expand-info').textContent = mainExpanded
+            ? `Exibindo todos os ${mainRows.length} registros`
+            : `Exibindo 10 de ${mainRows.length} registros`;
+        document.getElementById('btn-expand-txt').textContent  = mainExpanded ? 'Recolher' : `Ver mais ${extra} registro${extra>1?'s':''}`;
+        document.getElementById('btn-expand-icon').className   = mainExpanded ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+        if (!mainExpanded) document.getElementById('tbody-ameacas').closest('.bg-white').scrollIntoView({behavior:'smooth', block:'start'});
     }
 
     function sortMain(col) {
-        if (mainSort.col === col) mainSort.dir *= -1;
-        else { mainSort.col = col; mainSort.dir = col === 'vlr' || col === 'score' || col === 'dias' ? -1 : 1; }
-        renderMainRows();
+        mainSort.dir = mainSort.col===col ? mainSort.dir*-1 : (col==='vlr'||col==='score'||col==='dias' ? -1 : 1);
+        mainSort.col = col;
+        mainExpanded = false;
+        renderMain();
     }
 
-    // ── TAB SWITCHING ────────────────────────────────────────────────────────
     function mudarTabela(tipo, evt) {
-        mainTipo = tipo;
-        document.querySelectorAll('.btn-tab').forEach(b => {
-            b.classList.remove('bg-emerald-600','text-white','shadow-inner');
-            b.classList.add('bg-slate-200','text-slate-600');
-        });
-        const btn = evt && evt.currentTarget ? evt.currentTarget : document.querySelectorAll('.btn-tab')[0];
-        if(btn) { btn.classList.remove('bg-slate-200','text-slate-600'); btn.classList.add('bg-emerald-600','text-white','shadow-inner'); }
+        mainTipo = tipo; mainExpanded = false;
+        document.querySelectorAll('.btn-tab').forEach(b => { b.classList.remove('bg-emerald-600','text-white','shadow-inner'); b.classList.add('bg-slate-200','text-slate-600'); });
+        const btn = evt?.currentTarget || document.querySelectorAll('.btn-tab')[0];
+        btn.classList.remove('bg-slate-200','text-slate-600'); btn.classList.add('bg-emerald-600','text-white','shadow-inner');
 
         const titulos = {
             ia:        '<i class="fa-solid fa-microchip text-emerald-500 mr-2"></i>Ameaças por Inteligência Artificial (IA)',
@@ -1001,81 +1032,84 @@
             setorial:  '<i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>Distorção Estatística de Z-Score Setorial',
             duplicata: '<i class="fa-solid fa-copy text-emerald-500 mr-2"></i>Duplicatas Transacionais',
         };
-        document.getElementById('titulo-tabela').innerHTML = titulos[tipo] || titulos.ia;
+        document.getElementById('titulo-tabela').innerHTML = titulos[tipo]||titulos.ia;
 
-        // Atualiza label da coluna de dias conforme aba
-        const diasLabel = document.getElementById('th-dias-label');
-        if (diasLabel) {
-            diasLabel.innerHTML = tipo === 'zumbi'
-                ? 'Dias desde Emissão<span class="sort-icon"></span>'
-                : 'Dias Atraso<span class="sort-icon"></span>';
-        }
+        // Renomeia coluna de dias para Zumbi
+        const thDias = document.getElementById('th-dias-lbl');
+        if (thDias) thDias.innerHTML = tipo==='zumbi' ? 'Dias s/ Emissão<span class="si"></span>' : 'Dias Atraso<span class="si"></span>';
 
         const filtros = {
-            ia:        d => d.flag_fraude_ia == 1,
-            zumbi:     d => d.flag_boleto_zumbi == 1,
-            colusao:   d => d.flag_colusao == 1,
-            setorial:  d => d.flag_anomalia_setorial == 1,
-            duplicata: d => d.flag_duplicata_transacional == 1,
+            ia:        d => d.flag_fraude_ia==1,
+            zumbi:     d => d.flag_boleto_zumbi==1,
+            colusao:   d => d.flag_colusao==1,
+            setorial:  d => d.flag_anomalia_setorial==1,
+            duplicata: d => d.flag_duplicata_transacional==1,
         };
-        mainRows = baseCriticos.filter(filtros[tipo] || filtros.ia);
-        mainSort = { col: 'vlr', dir: -1 };   // reseta para valor desc ao trocar aba
-        renderMainRows();
+        mainRows = baseCriticos.filter(filtros[tipo]||filtros.ia);
+        mainSort = { col:'vlr', dir:-1 };
+        renderMain();
     }
 
     // ── BAIXO RISCO MODAL ────────────────────────────────────────────────────
-    function renderBRRows() {
-        const sorted = [...brRows].sort((a, b) => {
-            const va = colVal(a, brSort.col, false);
-            const vb = colVal(b, brSort.col, false);
-            if (typeof va === 'string') return va.localeCompare(vb) * brSort.dir;
-            return (va - vb) * brSort.dir;
+    function renderBR() {
+        const sorted = [...brRows].sort((a,b) => {
+            const va = colVal(a, brSort.col, false), vb = colVal(b, brSort.col, false);
+            return typeof va==='string' ? va.localeCompare(vb)*brSort.dir : (va-vb)*brSort.dir;
         });
-        updateSortHeaders('thead-br', brSort.col, brSort.dir);
-
-        const tbody = document.getElementById('tbody-baixo-risco');
+        updateSortTh('thead-br', brSort.col, brSort.dir);
+        const tbody = document.getElementById('tbody-br');
         tbody.innerHTML = '';
-        sorted.forEach(d => {
-            const dias   = calcDiasVencto(d);
-            const setor  = d.setor_oficial_ibge || 'Não identificado';
-            const setorA = setor.length > 42 ? setor.substring(0,40)+'…' : setor;
+        sorted.forEach((d, i) => {
+            const dias    = diasVencto(d);
+            const setor   = d.setor_oficial_ibge||'Não identificado';
+            const setorA  = setor.length>42 ? setor.substring(0,40)+'…' : setor;
             const emissao = d.dt_emissao ? new Date(d.dt_emissao).toLocaleDateString('pt-BR') : '—';
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-emerald-50 transition';
+            if (i >= PAGE) { tr.classList.add('row-extra'); if (brExpanded) tr.classList.add('show'); }
             tr.innerHTML = `
                 <td class="p-4 text-xs text-slate-700 font-medium" title="${setor}">${setorA}</td>
                 <td class="p-4 text-center font-bold">${d.uf_pagador||'NI'}</td>
                 <td class="p-4 font-bold text-emerald-700 whitespace-nowrap">R$ ${parseFloat(d.vlr_nominal||0).toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
                 <td class="p-4 text-center whitespace-nowrap"><span class="bg-emerald-600 text-white px-2 py-1 rounded text-xs font-bold">${parseFloat(d.pontuacao_risco||0).toFixed(0)} pts</span></td>
-                <td class="p-4 text-center whitespace-nowrap">${formatDias(dias, false)}</td>
-                <td class="p-4 text-center text-xs text-slate-500 whitespace-nowrap">${emissao}</td>
-            `;
+                <td class="p-4 text-center whitespace-nowrap">${fmtDias(dias, false)}</td>
+                <td class="p-4 text-center text-xs text-slate-500 whitespace-nowrap">${emissao}</td>`;
             tbody.appendChild(tr);
         });
+        // Footer expand BR
+        const footer = document.getElementById('br-expand-footer');
+        const extra  = sorted.length - PAGE;
+        if (extra > 0) {
+            footer.classList.remove('hidden');
+            document.getElementById('br-expand-info').textContent = brExpanded ? `Exibindo todos os ${sorted.length}` : `Exibindo 10 de ${sorted.length}`;
+            document.getElementById('btn-expand-br-txt').textContent = brExpanded ? 'Recolher' : `Ver mais ${extra}`;
+            document.getElementById('btn-expand-br-icon').className  = brExpanded ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+        } else { footer.classList.add('hidden'); }
     }
-
+    function toggleExpandBR() {
+        brExpanded = !brExpanded;
+        document.querySelectorAll('#tbody-br .row-extra').forEach(tr => {
+            if (brExpanded) tr.classList.add('show'); else tr.classList.remove('show');
+        });
+        const extra = brRows.length - PAGE;
+        document.getElementById('br-expand-info').textContent = brExpanded ? `Exibindo todos os ${brRows.length}` : `Exibindo 10 de ${brRows.length}`;
+        document.getElementById('btn-expand-br-txt').textContent = brExpanded ? 'Recolher' : `Ver mais ${extra}`;
+        document.getElementById('btn-expand-br-icon').className  = brExpanded ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
+    }
     function sortBR(col) {
-        if (brSort.col === col) brSort.dir *= -1;
-        else { brSort.col = col; brSort.dir = col === 'vlr' || col === 'score' || col === 'dias' ? -1 : 1; }
-        renderBRRows();
+        brSort.dir = brSort.col===col ? brSort.dir*-1 : (col==='vlr'||col==='score'||col==='dias' ? -1 : 1);
+        brSort.col = col; brExpanded = false; renderBR();
     }
-
     function mostrarTopBaixoRisco() {
         brRows = todosValidos.filter(d =>
-            d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
-            d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
+            d.classificacao_sentinela?.includes('BAIXO') &&
+            d.flag_fraude_ia!=1 && d.flag_duplicata_transacional!=1 && d.flag_boleto_zumbi!=1
         );
-        brSort = { col: 'vlr', dir: -1 };
-
-        // Adiciona id ao thead do modal para updateSortHeaders funcionar
-        const thead = document.querySelector('#modalBaixoRisco thead');
-        if (thead && !thead.id) thead.id = 'thead-br';
-
-        renderBRRows();
+        brSort = { col:'vlr', dir:-1 }; brExpanded = false;
+        renderBR();
         const m = document.getElementById('modalBaixoRisco');
         m.classList.remove('hidden'); m.classList.add('flex');
     }
-
     function fecharModalBR() {
         const m = document.getElementById('modalBaixoRisco');
         m.classList.add('hidden'); m.classList.remove('flex');
@@ -1084,87 +1118,65 @@
     // ── PROCESSAMENTO DO CSV ─────────────────────────────────────────────────
     function processarDados(data) {
         const validos = data.filter(d => d.id_boleto && d.classificacao_sentinela);
-        todosValidos = validos;
-        baseCriticos = validos.filter(d => d.classificacao_sentinela.includes('CR') || d.pontuacao_risco >= 60);
+        todosValidos  = validos;
+        baseCriticos  = validos.filter(d => d.classificacao_sentinela.includes('CR') || d.pontuacao_risco >= 60);
 
-        const totalCapital = baseCriticos.reduce((acc, val) => acc + (parseFloat(val.vlr_nominal) || 0), 0);
+        const totalCapital = baseCriticos.reduce((s,d) => s+(parseFloat(d.vlr_nominal)||0), 0);
         document.getElementById('kpi-volume').innerText  = validos.length.toLocaleString('pt-BR');
         document.getElementById('kpi-malha').innerText   = baseCriticos.length.toLocaleString('pt-BR');
-        document.getElementById('kpi-capital').innerText = 'R$ ' + (totalCapital / 1e6).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Mi';
+        document.getElementById('kpi-capital').innerText = 'R$ ' + (totalCapital/1e6).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' Mi';
 
-        // ── Baixo Risco — métricas dinâmicas ─────────────────────────────────
-        const baixoRisco = validos.filter(d =>
-            d.classificacao_sentinela && d.classificacao_sentinela.includes('BAIXO') &&
-            d.flag_fraude_ia != 1 && d.flag_duplicata_transacional != 1 && d.flag_boleto_zumbi != 1
-        );
-        const nBaixo   = baixoRisco.length;
-        const vlrBaixo = baixoRisco.reduce((s,d) => s + (parseFloat(d.vlr_nominal)||0), 0);
-        const ticket   = nBaixo ? vlrBaixo / nBaixo : 0;
-        const pctSeg   = (nBaixo / validos.length * 100).toFixed(1);
-        const atrasosBR = baixoRisco.map(d => calcDiasVencto(d)).filter(v => v !== null && v >= 0).sort((a,b)=>a-b);
-        const medAtr   = atrasosBR.length ? atrasosBR[Math.floor(atrasosBR.length/2)] : 0;
-        const ufBR = {};
-        baixoRisco.forEach(d => { const u = d.uf_pagador||'NI'; ufBR[u]=(ufBR[u]||0)+1; });
+        // Recomendações — baixo risco dinâmico
+        const br = validos.filter(d => d.classificacao_sentinela?.includes('BAIXO') && d.flag_fraude_ia!=1 && d.flag_duplicata_transacional!=1 && d.flag_boleto_zumbi!=1);
+        const nBR = br.length, vlrBR = br.reduce((s,d)=>s+(parseFloat(d.vlr_nominal)||0),0);
+        const atBR = br.map(d=>diasVencto(d)).filter(v=>v!==null&&v>=0).sort((a,b)=>a-b);
+        const medBR = atBR.length ? atBR[Math.floor(atBR.length/2)] : 0;
+        const ufBR = {}; br.forEach(d=>{ const u=d.uf_pagador||'NI'; ufBR[u]=(ufBR[u]||0)+1; });
         const top3UF = Object.entries(ufBR).sort((a,b)=>b[1]-a[1]).slice(0,3).map(x=>x[0]).join(' • ');
+        document.getElementById('rec-pct-badge').textContent = (nBR/validos.length*100).toFixed(1)+'% da carteira segura';
+        document.getElementById('rec-count').textContent     = nBR.toLocaleString('pt-BR');
+        document.getElementById('rec-volume').textContent    = 'R$ '+(vlrBR/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+' Mi em volume';
+        document.getElementById('rec-ticket').textContent    = 'R$ '+(nBR?vlrBR/nBR:0).toLocaleString('pt-BR',{maximumFractionDigits:0});
+        document.getElementById('rec-atraso').textContent    = 'Atraso mediano: '+medBR+' dias';
+        document.getElementById('rec-ufs').textContent       = top3UF||'—';
 
-        document.getElementById('rec-pct-badge').textContent = pctSeg + '% da carteira segura';
-        document.getElementById('rec-count').textContent     = nBaixo.toLocaleString('pt-BR');
-        document.getElementById('rec-volume').textContent    = 'R$ ' + (vlrBaixo/1e6).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}) + ' Mi em volume';
-        document.getElementById('rec-ticket').textContent    = 'R$ ' + ticket.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0});
-        document.getElementById('rec-atraso').textContent    = 'Atraso mediano: ' + medAtr + ' dias';
-        document.getElementById('rec-ufs').textContent       = top3UF || '—';
-
-        // ── Anatomia ──────────────────────────────────────────────────────────
-        const anatomia = {
-            'Emissão em Lote': 0, 'Duplicata Transacional': 0, 'Histórico Atraso': 0,
-            'Repetição Valor': 0, 'Concentração Benef.': 0, 'Toxicidade Dupla': 0,
-            'Anomalia UF': 0, 'Colusão': 0, 'Anomalia Setorial': 0,
-            'Anomalia IA': 0, 'Boleto Zumbi': 0, 'Overpayment': 0
-        };
+        // Anatomia
+        const anat = {'Emissão em Lote':0,'Duplicata Transacional':0,'Histórico Atraso':0,'Repetição Valor':0,'Concentração Benef.':0,'Toxicidade Dupla':0,'Anomalia UF':0,'Colusão':0,'Anomalia Setorial':0,'Anomalia IA':0,'Boleto Zumbi':0,'Overpayment':0};
         baseCriticos.forEach(d => {
-            if(d.flag_fraude_ia == 1)               anatomia['Anomalia IA']++;
-            if(d.flag_boleto_zumbi == 1)            anatomia['Boleto Zumbi']++;
-            if(d.flag_duplicata_transacional == 1)  anatomia['Duplicata Transacional']++;
-            if(d.flag_overpayment_alto == 1)        anatomia['Overpayment']++;
-            if(d.flag_colusao == 1)                 anatomia['Colusão']++;
-            if(d.flag_anomalia_setorial == 1)       anatomia['Anomalia Setorial']++;
-            if(d.flag_historico_atraso_critico == 1)anatomia['Histórico Atraso']++;
-            if(d.flag_emissao_em_lote == 1)         anatomia['Emissão em Lote']++;
-            if(d.flag_concentracao_beneficiario==1) anatomia['Concentração Benef.']++;
-            if(d.flag_toxicidade_dupla == 1)        anatomia['Toxicidade Dupla']++;
-            if(d.flag_uf_anomala == 1)              anatomia['Anomalia UF']++;
-            if(d.flag_repeticao_mesmo_valor == 1)   anatomia['Repetição Valor']++;
+            if(d.flag_fraude_ia==1)               anat['Anomalia IA']++;
+            if(d.flag_boleto_zumbi==1)            anat['Boleto Zumbi']++;
+            if(d.flag_duplicata_transacional==1)  anat['Duplicata Transacional']++;
+            if(d.flag_overpayment_alto==1)        anat['Overpayment']++;
+            if(d.flag_colusao==1)                 anat['Colusão']++;
+            if(d.flag_anomalia_setorial==1)       anat['Anomalia Setorial']++;
+            if(d.flag_historico_atraso_critico==1)anat['Histórico Atraso']++;
+            if(d.flag_emissao_em_lote==1)         anat['Emissão em Lote']++;
+            if(d.flag_concentracao_beneficiario==1)anat['Concentração Benef.']++;
+            if(d.flag_toxicidade_dupla==1)        anat['Toxicidade Dupla']++;
+            if(d.flag_uf_anomala==1)              anat['Anomalia UF']++;
+            if(d.flag_repeticao_mesmo_valor==1)   anat['Repetição Valor']++;
         });
-        const anatSort = Object.entries(anatomia).sort((a,b) => b[1]-a[1]);
-        chartAnatomia.data.labels = anatSort.map(x => x[0]);
-        chartAnatomia.data.datasets[0].data = anatSort.map(x => x[1]);
+        const anatSort = Object.entries(anat).sort((a,b)=>b[1]-a[1]);
+        chartAnatomia.data.labels = anatSort.map(x=>x[0]);
+        chartAnatomia.data.datasets[0].data = anatSort.map(x=>x[1]);
         chartAnatomia.update();
 
-        const geo = {};
-        baseCriticos.forEach(d => { let uf = d.uf_pagador || 'NI'; geo[uf] = (geo[uf]||0)+1; });
+        const geo = {}; baseCriticos.forEach(d=>{ const u=d.uf_pagador||'NI'; geo[u]=(geo[u]||0)+1; });
         const geoSort = Object.entries(geo).sort((a,b)=>b[1]-a[1]).slice(0,5);
-        chartGeo.data.labels = geoSort.map(x=>x[0]);
-        chartGeo.data.datasets[0].data = geoSort.map(x=>x[1]);
-        chartGeo.update();
+        chartGeo.data.labels = geoSort.map(x=>x[0]); chartGeo.data.datasets[0].data = geoSort.map(x=>x[1]); chartGeo.update();
 
         const cc = {'1 - Baixo':0,'2 - Médio':0,'3 - Alto':0,'4 - Muito Alto':0};
-        baseCriticos.forEach(d => { if(cc[d.cluster_valor_nominal]!==undefined) cc[d.cluster_valor_nominal]++; });
-        chartCluster.data.datasets[0].data = [cc['1 - Baixo'],cc['2 - Médio'],cc['3 - Alto'],cc['4 - Muito Alto']];
-        chartCluster.update();
+        baseCriticos.forEach(d=>{ if(cc[d.cluster_valor_nominal]!==undefined) cc[d.cluster_valor_nominal]++; });
+        chartCluster.data.datasets[0].data = [cc['1 - Baixo'],cc['2 - Médio'],cc['3 - Alto'],cc['4 - Muito Alto']]; chartCluster.update();
 
-        const dIA = [], dOut = [];
-        baseCriticos.forEach(d => {
-            const pt = { x: parseFloat(d.pontuacao_risco)||0, y: parseFloat(d.vlr_nominal)||0 };
-            if(d.flag_fraude_ia == 1) dIA.push(pt); else dOut.push(pt);
-        });
-        chartScatter.data.datasets[0].data = dIA;
-        chartScatter.data.datasets[1].data = dOut;
-        chartScatter.update();
+        const dIA=[], dOut=[];
+        baseCriticos.forEach(d=>{ const pt={x:parseFloat(d.pontuacao_risco)||0,y:parseFloat(d.vlr_nominal)||0}; (d.flag_fraude_ia==1?dIA:dOut).push(pt); });
+        chartScatter.data.datasets[0].data=dIA; chartScatter.data.datasets[1].data=dOut; chartScatter.update();
 
         mudarTabela('ia', null);
     }
 
-    // ── MODAIS ───────────────────────────────────────────────────────────────
+    // Modais
     const modalPython = document.getElementById('modalPython');
     const modalEDA    = document.getElementById('modalEDA');
     let edaChartsBuilt = false;
@@ -1181,55 +1193,42 @@
     document.getElementById('btnFecharEDABottom').onclick = () => { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); };
 
     window.addEventListener('click', e => {
-        if(e.target === modalPython)  { modalPython.classList.add('hidden'); modalPython.classList.remove('flex'); }
-        if(e.target === modalEDA)     { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); }
-        if(e.target === document.getElementById('modalBaixoRisco')) fecharModalBR();
+        if(e.target===modalPython)  { modalPython.classList.add('hidden'); modalPython.classList.remove('flex'); }
+        if(e.target===modalEDA)     { modalEDA.classList.add('hidden'); modalEDA.classList.remove('flex'); }
+        if(e.target===document.getElementById('modalBaixoRisco')) fecharModalBR();
     });
 
-    // ── LOADING ───────────────────────────────────────────────────────────────
+    // Loading
     let prog = 0;
     const barEl = document.getElementById('loadingBar');
     const barInterval = setInterval(() => { prog = Math.min(prog + 8, 90); barEl.style.width = prog + '%'; }, 100);
 
-    // INIT — fetch CSV
     setTimeout(() => {
         Papa.parse('Sentinela_MVP_Final.csv', {
             download: true, header: true, dynamicTyping: true, skipEmptyLines: true,
             complete: function(results) {
-                clearInterval(barInterval);
-                barEl.style.width = '100%';
+                clearInterval(barInterval); barEl.style.width = '100%';
                 const overlay = document.getElementById('loadingOverlay');
-                setTimeout(() => { overlay.style.opacity = '0'; setTimeout(() => overlay.classList.add('hidden'), 500); }, 300);
-                processarDados(results.data);
-                buildEdaCharts();
-                edaChartsBuilt = true;
+                setTimeout(() => { overlay.style.opacity='0'; setTimeout(()=>overlay.classList.add('hidden'),500); }, 300);
+                processarDados(results.data); buildEdaCharts(); edaChartsBuilt = true;
             },
             error: function() {
                 clearInterval(barInterval);
                 const overlay = document.getElementById('loadingOverlay');
-                overlay.innerHTML = `
-                    <div class="text-center px-6">
-                        <i class="fa-solid fa-file-csv text-5xl text-blue-400 mb-4 block"></i>
-                        <h2 class="text-xl font-bold text-white mb-1" style="font-family:'Syne',sans-serif">Modo Local Detectado</h2>
-                        <p class="text-slate-400 text-sm mb-5">Coloque o arquivo <strong class="text-white">Sentinela_MVP_Final.csv</strong> na mesma pasta<br>ou selecione manualmente abaixo:</p>
-                        <label class="cursor-pointer inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl transition text-sm">
-                            Selecionar CSV
-                            <input type="file" id="fileUploadFallback" accept=".csv" class="hidden">
-                        </label>
-                    </div>`;
+                overlay.innerHTML = `<div class="text-center px-6">
+                    <i class="fa-solid fa-file-csv text-5xl text-blue-400 mb-4 block"></i>
+                    <h2 class="text-xl font-bold text-white mb-1" style="font-family:'Syne',sans-serif">Modo Local Detectado</h2>
+                    <p class="text-slate-400 text-sm mb-5">Coloque o arquivo <strong class="text-white">Sentinela_MVP_Final.csv</strong> na mesma pasta<br>ou selecione manualmente abaixo:</p>
+                    <label class="cursor-pointer inline-block bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl transition text-sm">
+                        Selecionar CSV
+                        <input type="file" id="fileUploadFallback" accept=".csv" class="hidden">
+                    </label></div>`;
                 document.getElementById('fileUploadFallback').addEventListener('change', function(e) {
                     const file = e.target.files[0];
-                    if(file) {
-                        Papa.parse(file, {
-                            header: true, dynamicTyping: true, skipEmptyLines: true,
-                            complete: function(results) {
-                                overlay.style.opacity = '0';
-                                setTimeout(() => overlay.classList.add('hidden'), 500);
-                                processarDados(results.data);
-                                if(!edaChartsBuilt) { buildEdaCharts(); edaChartsBuilt = true; }
-                            }
-                        });
-                    }
+                    if(file) Papa.parse(file, { header:true, dynamicTyping:true, skipEmptyLines:true, complete: function(results) {
+                        overlay.style.opacity='0'; setTimeout(()=>overlay.classList.add('hidden'),500);
+                        processarDados(results.data); if(!edaChartsBuilt){buildEdaCharts();edaChartsBuilt=true;}
+                    }});
                 });
             }
         });
